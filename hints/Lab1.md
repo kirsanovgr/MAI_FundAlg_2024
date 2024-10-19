@@ -9,7 +9,6 @@ typedef enum kOpts {
     OPT_P
     // итд
 } kOpts;
-
 int GetOpts(int argc, char** argv, kOpts *option, int *number); // Пример функции как вариант для парсинга что вам вообще поступило
 void HandlerOptP(int number); // обработчики опций
 void HandlerOptH(int number);
