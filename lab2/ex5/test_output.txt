@@ -1,0 +1,6 @@
+Roman: MCMLXXXIV
+Zr: 00010100001
+Base 16: ff
+Base 16 Upper: FF
+From Base 16: 255
+Memory Dump: 00101110 11111101 01101001 10110110 
