@@ -17,7 +17,7 @@ error_msg geometric_mean(double * result, int n, ...){
 	}
 	va_end(factor);
 	*result = pow(*result, 1.0 / n);
-	return NORMAL;
+	return SUCCESS;
 }
 
 double QuitPow(double x, int n){

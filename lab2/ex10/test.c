@@ -6,7 +6,7 @@ START_TEST(decompositionpolynomial){
 	int n = 3;
 	double a = 2.0;
 	error_msg errorMsg = DecompositionPolynomial(1e-16, a, &res, n, 2.0, 3.0, 4.0, 5.0);
-	ck_assert_int_eq(errorMsg, NORMAL);
+	ck_assert_int_eq(errorMsg, SUCCESS);
 	for(int i = 0; i <= n;++i){
 		ck_assert_double_eq(correct_res1[i], res[i]);
 	}
@@ -16,7 +16,7 @@ START_TEST(decompositionpolynomial){
 	n = 2;
 	a = 2.0;
 	errorMsg = DecompositionPolynomial(1e-16, a, &res, n, 1.0, 1.0, 2.0);
-	ck_assert_int_eq(errorMsg, NORMAL);
+	ck_assert_int_eq(errorMsg, SUCCESS);
 	for (int i = 0; i <= n; ++i) {
 		ck_assert_double_eq(correct_res2[i], res[i]);
 	}
@@ -26,7 +26,7 @@ START_TEST(decompositionpolynomial){
 	n = 7;
 	errorMsg =
 	    DecompositionPolynomial(1e-16, 2.0, &res, n, 12.0, 13.0, -4.2, 5.3, 89.1, 99.1, 1.2, 12.2);
-	ck_assert_int_eq(errorMsg, NORMAL);
+	ck_assert_int_eq(errorMsg, SUCCESS);
 	for (int i = 0; i <= n; ++i) {
 		ck_assert_double_eq_tol(correct_res3[i], res[i], 1e-10);
 	}

@@ -18,7 +18,7 @@ error_msg computeLPSArray(const char *pat, int M, int *lps) {
 			}
 		}
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg KMPSearch(char *substring, FILE *f, IntVector *vec) {
@@ -51,7 +51,7 @@ error_msg KMPSearch(char *substring, FILE *f, IntVector *vec) {
 			}
 		}
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg print_result(StringVector *result, char *string, char *filename, IntVector *vec, FILE *f) {
@@ -79,7 +79,7 @@ error_msg print_result(StringVector *result, char *string, char *filename, IntVe
 			return error;
 		}
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg FilesStrStr(int n, StringVector * result, char *string, ...) {
@@ -118,5 +118,5 @@ error_msg FilesStrStr(int n, StringVector * result, char *string, ...) {
 	}
 	va_end(factor);
 	destroy_int_vector(pos);
-	return NORMAL;
+	return SUCCESS;
 }

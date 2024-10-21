@@ -32,7 +32,7 @@ error_msg GetOpts(int argc, char **argv, kOpts *opt) {
 	} else {
 		return INCORRECT_OPTIONS_ERROR;
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 
@@ -53,40 +53,43 @@ error_msg CharToUInt(const char *string, unsigned int *x) {
 
 error_msg HandlerOptL(char **argv, int *size) {
 	*size = SizeString(argv[2]);
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg HandlerOptR(char **argv, char **new_string) {
 	*new_string = (char *)malloc(sizeof(char) * (SizeString(argv[2]) + 1));
 	if (!*new_string) return MEMORY_ALLOCATED_ERROR;
+    char * tmp_new_string = *new_string;
 	char *old_string = argv[2];
 	for (int i = SizeString(old_string) - 1, j = 0; i >= 0; --i, ++j) {
-		(*new_string)[j] = old_string[i];
+        tmp_new_string[j] = old_string[i];
 	}
-	(*new_string)[SizeString(argv[2])] = '\0';
-	return NORMAL;
+    tmp_new_string[SizeString(argv[2])] = '\0';
+	return SUCCESS;
 }
 
 error_msg HandlerOptU(char **argv, char **new_string) {
 	*new_string = (char *)malloc(sizeof(char) * (SizeString(argv[2]) + 1));
 	if (!*new_string) return MEMORY_ALLOCATED_ERROR;
+    char * tmp_new_string = *new_string;
 	char *old_string = argv[2];
 	int i;
 	for (i = 0; i < SizeString((old_string)); ++i) {
 		if (i % 2 && old_string[i] >= 'a' && old_string[i] <= 'z') {
-			(*new_string)[i] = 'A' + old_string[i] - 'a';
+            tmp_new_string[i] = 'A' + old_string[i] - 'a';
 		} else {
-			(*new_string)[i] = old_string[i];
+            tmp_new_string[i] = old_string[i];
 		}
 	}
-	(*new_string)[i] = '\0';
-	return NORMAL;
+    tmp_new_string[i] = '\0';
+	return SUCCESS;
 }
 
 error_msg HandlerOptN(char **argv, char **new_string) {
 	error_msg error;
 	*new_string = (char *)malloc(sizeof(char) * (SizeString(argv[2]) + 1));
 	if (!*new_string) return MEMORY_ALLOCATED_ERROR;
+    char * tmp_new_string = *new_string;
 	char *old_string = argv[2];
 	int index_new_string = 0;
 	CharVector *letters = create_char_vector(1);
@@ -100,7 +103,7 @@ error_msg HandlerOptN(char **argv, char **new_string) {
 	}
 	for (int i = 0; i < SizeString(old_string); ++i) {
 		if (old_string[i] >= '0' && old_string[i] <= '9')
-			(*new_string)[index_new_string++] = old_string[i];
+			tmp_new_string[index_new_string++] = old_string[i];
 		else if ((old_string[i] >= 'a' && old_string[i] <= 'z') || (old_string[i] >= 'A' && old_string[i] <= 'Z')) {
 			error = push_end_charvector(letters, old_string[i]);
 			if (error) {
@@ -125,7 +128,7 @@ error_msg HandlerOptN(char **argv, char **new_string) {
 			destroy_char_vector(others);
 			return error;
 		}
-		(*new_string)[index_new_string++] = x;
+		tmp_new_string[index_new_string++] = x;
 	}
 	for (int i = 0; i < size_charvector(others); ++i) {
 		error = get_charvector(others, i, &x);
@@ -134,12 +137,12 @@ error_msg HandlerOptN(char **argv, char **new_string) {
 			destroy_char_vector(others);
 			return error;
 		}
-		(*new_string)[index_new_string++] = x;
+		tmp_new_string[index_new_string++] = x;
 	}
-	(*new_string)[index_new_string] = '\0';
+	tmp_new_string[index_new_string] = '\0';
 	destroy_char_vector(letters);
 	destroy_char_vector(others);
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg HandlerOptC(int argc, char **argv, char **new_string) {
@@ -154,14 +157,15 @@ error_msg HandlerOptC(int argc, char **argv, char **new_string) {
 	}
 	*new_string = (char *)malloc(sum_size + 1);
 	if (!*new_string) return MEMORY_ALLOCATED_ERROR;
-	(*new_string)[0] = '\0';
+    char * tmp_new_string = *new_string;
+	tmp_new_string[0] = '\0';
 	for (int j = 3; j < argc - 1; ++j) {
 		argv[j] = argv[j + 1];
 	}
 	int size = argc - 3, random_index;
 	for (int i = 0; i < argc - 3; ++i) {
 		random_index = rand() % size + 2;
-		error = my_strcat(*new_string, argv[random_index]);
+		error = my_strcat(tmp_new_string, argv[random_index]);
 		if (error) return error;
 		for (int j = random_index; j < argc - 1; ++j) {
 			argv[j] = argv[j + 1];
@@ -169,5 +173,5 @@ error_msg HandlerOptC(int argc, char **argv, char **new_string) {
 		--size;
 	}
 
-	return NORMAL;
+	return SUCCESS;
 }

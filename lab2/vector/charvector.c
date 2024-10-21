@@ -24,7 +24,7 @@ error_msg resize_char_vector(CharVector* vector, int new_capacity) {
 		return MEMORY_ALLOCATED_ERROR;
 	}
 	vector->capacity = new_capacity;
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg push_end_charvector(CharVector* vector, char new_element) {
@@ -34,7 +34,7 @@ error_msg push_end_charvector(CharVector* vector, char new_element) {
 	}
 	vector->size += 1;
 	vector->arr[vector->size - 1] = new_element;
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg get_charvector(CharVector* vector, int index, char * value) {
@@ -42,7 +42,7 @@ error_msg get_charvector(CharVector* vector, int index, char * value) {
 		return INDEX_VECTOR_ERROR;
 	}
 	*value = vector->arr[index];
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg at_charvector(CharVector* vector, int index, char new_element) {
@@ -50,7 +50,7 @@ error_msg at_charvector(CharVector* vector, int index, char new_element) {
 		return INDEX_VECTOR_ERROR;
 	}
 	vector->arr[index] = new_element;
-	return NORMAL;
+	return SUCCESS;
 }
 
 int size_charvector(CharVector* vector) { return vector->size; }

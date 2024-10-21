@@ -33,7 +33,7 @@ error_msg prime_factors(int n, IntVector * factors) {
 		errorMsg = push_end_intvector(factors, n);
 		if(errorMsg) return errorMsg;
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 
@@ -86,13 +86,13 @@ error_msg has_finite_representation(double fraction, int base, int* fl) {
 			*fl = 0;
 			destroy_int_vector(factors);
 			destroy_int_vector(base_factors);
-			return NORMAL;
+			return SUCCESS;
 		}
 	}
 	*fl = 1;
 	destroy_int_vector(factors);
 	destroy_int_vector(base_factors);
-	return NORMAL;
+	return SUCCESS;
 }
 
 
@@ -132,5 +132,5 @@ error_msg AreCorrectFractions(StringVector * vec, int base, int n, ...){
 		}
 	}
 	va_end(factor);
-	return NORMAL;
+	return SUCCESS;
 }

@@ -11,7 +11,7 @@ error_msg int_to_roman(int num, char *roman) {
 		}
 	}
 	roman[SizeString(roman)] = '\0';
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg int_to_zeckendorf(unsigned int num, char *zeckendorf) {
@@ -37,7 +37,7 @@ error_msg int_to_zeckendorf(unsigned int num, char *zeckendorf) {
 		zeckendorf[i] = '\0';
 		i -= 1;
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 void From10to(int number, char *result, int based) {

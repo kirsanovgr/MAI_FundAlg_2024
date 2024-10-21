@@ -88,7 +88,7 @@ error_msg AdditionNumbers(char *a, char *b, char *result, int base) {
 	}
 	result[i] = '\0';
 	destroy_char_vector(tmp);
-	return NORMAL;
+	return SUCCESS;
 }
 
 int max(int a, int b){
@@ -131,5 +131,5 @@ error_msg AdditionManyNumbers(char * result, int base, int n, ...){
 	}
 	StringWithoutLeadingZeros(last, result);
 	free(last);
-	return NORMAL;
+	return SUCCESS;
 }

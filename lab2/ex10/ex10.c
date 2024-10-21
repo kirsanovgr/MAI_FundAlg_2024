@@ -37,7 +37,7 @@ error_msg DecompositionPolynomial(double eps, double a, double **result, int n, 
 		}
 		(*result)[i] /= (double)fac(i);
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 int compare(double a, double b, double eps) {

@@ -133,7 +133,7 @@ error_msg ProductNumbers(char *a, char *b, char *result, int base) {
 	}
 	result[j] = '\0';
 	destroy_char_vector(tmp);
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg AdditionNumbers(char *a, char *b, char *result, int base) {
@@ -195,7 +195,7 @@ error_msg AdditionNumbers(char *a, char *b, char *result, int base) {
 	}
 	result[i] = '\0';
 	destroy_char_vector(tmp);
-	return NORMAL;
+	return SUCCESS;
 }
 
 int strcmpInOurCase(char *a, char *b){
@@ -319,5 +319,5 @@ error_msg FindNumbersKarper(StringVector *vec, int base, int n, ...) {
 		}
 	}
 	va_end(factor);
-	return NORMAL;
+	return SUCCESS;
 }

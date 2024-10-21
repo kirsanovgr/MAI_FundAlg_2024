@@ -6,7 +6,7 @@
 
 
 typedef enum error_msg{
-    NORMAL,
+    SUCCESS,
     INPUT_FILE_ERROR,
     OUTPUT_FILE_ERROR,
     MEMORY_ALLOCATED_ERROR,

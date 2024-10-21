@@ -10,7 +10,7 @@ START_TEST(test_geometric_mean)
 
 
 	err = geometric_mean(&result, 3, 2.0, 4.0, 8.0);
-	ck_assert_int_eq(err, NORMAL);
+	ck_assert_int_eq(err, SUCCESS);
 	ck_assert_double_eq_tol(result, 4.0, 1e-6);
 
 
@@ -19,12 +19,12 @@ START_TEST(test_geometric_mean)
 
 
 	err = geometric_mean(&result, 1, 2.0);
-	ck_assert_int_eq(err, NORMAL);
+	ck_assert_int_eq(err, SUCCESS);
 	ck_assert_double_eq_tol(result, 2.0, 1e-6);
 
 
 	err = geometric_mean(&result, 0);
-	ck_assert_int_eq(err, NORMAL);
+	ck_assert_int_eq(err, SUCCESS);
 	ck_assert_double_eq_tol(result, 1.0, 1e-6);
 }
 END_TEST

@@ -9,12 +9,12 @@ int main(int argc, char **argv) {
 	char * new_string;
 	int size;
 	switch (opt) {
-		case 0:
+		case OPT_L:
 			error = HandlerOptL(argv, &size);
 			if(error) return print_error(error);
 			printf("%d\n", size);
 			break;
-		case 1:
+		case OPT_R:
 			error = HandlerOptR(argv, &new_string);
 			if(error) {
 				free(new_string);
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 			printf("%s\n", new_string);
 			free(new_string);
 			break;
-		case 2:
+		case OPT_U:
 			error = HandlerOptU(argv, &new_string);
 			if(error) {
 				free(new_string);
@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 			printf("%s\n", new_string);
 			free(new_string);
 			break;
-		case 3:
+		case OPT_N:
 			error = HandlerOptN(argv, &new_string);
 			if(error) {
 				free(new_string);
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 			printf("%s\n", new_string);
 			free(new_string);
 			break;
-		case 4:
+		case OPT_C:
 			error = HandlerOptC(argc, argv, &new_string);
 			if(error) {
 				free(new_string);

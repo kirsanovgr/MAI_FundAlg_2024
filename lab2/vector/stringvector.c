@@ -10,7 +10,7 @@ error_msg str_to_k(const char **string, char *separator, char *result) {
 	char b[len_separator + 1];
 	if (len_string == 0) {
 		result = NULL;
-		return NORMAL;
+		return SUCCESS;
 	}
 	for (int i = 0; i < len_string; ++i) {
 		//        printf("%s\n", *string);
@@ -31,7 +31,7 @@ error_msg str_to_k(const char **string, char *separator, char *result) {
 		result[i] = **string;
 		*string += 1;
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg my_strcat(char *a, const char *b) {
@@ -40,7 +40,7 @@ error_msg my_strcat(char *a, const char *b) {
 		a[i] = b[j];
 	}
 	a[i] = '\0';
-	return NORMAL;
+	return SUCCESS;
 }
 
 int string_cmp(const char *a, const char *b) {
@@ -60,7 +60,7 @@ error_msg strcopy(const char *a, char *result, int start, int end) {
 		result[i] = a[i + start];
 	}
 	result[i] = '\0';
-	return NORMAL;
+	return SUCCESS;
 }
 
 int SizeString(const char *a) {
@@ -90,7 +90,7 @@ error_msg resize_string_vector(StringVector *vec) {
 	}
 	vec->data = new_data;
 	vec->capacity *= 2;
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg push_end_string_vector(StringVector *vec, char *string) {
@@ -107,7 +107,7 @@ error_msg push_end_string_vector(StringVector *vec, char *string) {
 	strcopy(string, vec->data[vec->size], 0, SizeString(string));
 	vec->size += 1;
 	//	print_string_vector(vec);
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg at_string_vector(StringVector *vec, int index, char *res) {
@@ -121,7 +121,7 @@ error_msg at_string_vector(StringVector *vec, int index, char *res) {
 		return MEMORY_ALLOCATED_ERROR;
 	}
 	strcopy(res, vec->data[index], 0, SizeString(res));
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg get_string_vector(StringVector *vec, int index, char **res) {
@@ -129,7 +129,7 @@ error_msg get_string_vector(StringVector *vec, int index, char **res) {
 		return INDEX_VECTOR_ERROR;
 	}
 	*res = vec->data[index];
-	return NORMAL;
+	return SUCCESS;
 }
 
 void print_string_vector(FILE * stream, StringVector *vec, char *separator) {

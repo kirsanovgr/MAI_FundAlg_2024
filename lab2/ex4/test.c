@@ -43,11 +43,11 @@ START_TEST(test_find_numbers_karper) {
 	ck_assert_int_eq(error, UNRECOGNIZED_CHARACTER_ERROR);
 
 	error = FindNumbersKarper(vec, 10, 3, "123", "456", "789");
-	ck_assert_int_eq(error, NORMAL);
+	ck_assert_int_eq(error, SUCCESS);
 	ck_assert_int_eq(vec->size, 0);
 
 	error = FindNumbersKarper(vec, 16, 2, "1A", "2B");
-	ck_assert_int_eq(error, NORMAL);
+	ck_assert_int_eq(error, SUCCESS);
 	ck_assert_int_eq(vec->size, 0);
 
 	error = FindNumbersKarper(vec, 1, 1, "1");
@@ -58,11 +58,11 @@ START_TEST(test_find_numbers_karper) {
 	ck_assert_int_eq(error, NUMERAL_SYSTEM_ERROR);
 
 	error = FindNumbersKarper(vec, 2, 2, "101", "110");
-	ck_assert_int_eq(error, NORMAL);
+	ck_assert_int_eq(error, SUCCESS);
 	ck_assert_int_eq(vec->size, 0);
 
 	error = FindNumbersKarper(vec, 16, 7, "0001745E", "13", "23", "7FE00", "80200", "fedacb", "85BD9");
-	ck_assert_int_eq(error, NORMAL);
+	ck_assert_int_eq(error, SUCCESS);
 	ck_assert_int_eq(vec->size, 4);
 	ck_assert_str_eq("1745E", vec->data[0]);
 

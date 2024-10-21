@@ -13,5 +13,5 @@ int main(){
 	print_string_vector(stdout, result, "");
 	destroy_string_vector(result);
 
-	return NORMAL;
+	return SUCCESS;
 }

@@ -19,7 +19,7 @@ error_msg RomanTOInt(char *s, int *res) {
 			*res += map[(int)s[i]];
 		}
 	}
-	return NORMAL;
+	return SUCCESS;
 }
 
 error_msg ZeckendorfTOUInt(char *s, unsigned int *res) {
@@ -37,7 +37,7 @@ error_msg ZeckendorfTOUInt(char *s, unsigned int *res) {
 		}
 	}
 
-	return NORMAL;
+	return SUCCESS;
 }
 
 int sequence_number(char c) {

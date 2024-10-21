@@ -1,4 +1,4 @@
-FLAGS = -Wall -Wextra -Werror -g -lm -lcheck -lsubunit -lrt -lpthread
+FLAGS = -Wall -Wextra -Werror -g -lm -lcheck -lsubunit -lrt -lpthread -std=c99
 COMP = gcc
 
 ex10: main.c

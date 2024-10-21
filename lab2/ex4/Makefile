@@ -1,4 +1,4 @@
-FLAGS = -Wall -Wextra -g -lm
+FLAGS = -Wall -Wextra -g -lm -std=c99
 COMP = gcc
 
 ex4: main.c
