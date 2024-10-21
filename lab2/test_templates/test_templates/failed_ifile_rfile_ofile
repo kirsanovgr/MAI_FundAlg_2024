@@ -1,0 +1,16 @@
+if [ $# -ne 5 ]
+then
+    echo "Incorrect test usage. Expected <exec file with args> <return code> <file with expected console output> <output file> <file with expected output data>"
+    exit 1
+fi
+
+if [ $2 = 0 ]
+then
+    echo "The return code cannot be 0 in a failed test"
+    exit 1
+fi
+
+
+"${BASH_SOURCE%/*}"/template_input_file_result_file_output_file "$1" "$2" "$3" "$4" "$5"
+
+exit $?
