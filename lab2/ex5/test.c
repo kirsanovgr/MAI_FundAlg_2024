@@ -3,7 +3,7 @@
 
 
 START_TEST(test_overfprintf) {
-	FILE *file = fopen("ex5/test_output.txt", "w");
+	FILE *file = fopen("test_output.txt", "w");
 	if (!file) {
 		ck_abort_msg("Failed to open file for writing");
 	}

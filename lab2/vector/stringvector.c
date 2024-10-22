@@ -56,13 +56,12 @@ error_msg strcopy(const char *a, char *result, int start, int end) {
 	int i = 0;
 	int end_for = end - start;
 	if (start > 0) end_for++;
-	for (; i < end_for; ++i) {
+	for (; i < end_for && i + start < SizeString(a); ++i) {
 		result[i] = a[i + start];
 	}
 	result[i] = '\0';
 	return SUCCESS;
 }
-
 int SizeString(const char *a) {
 	int i = 0;
 	for (; a[i] != '\0'; ++i)
@@ -132,7 +131,7 @@ error_msg get_string_vector(StringVector *vec, int index, char **res) {
 	return SUCCESS;
 }
 
-void print_string_vector(FILE * stream, StringVector *vec, char *separator) {
+void print_string_vector(FILE *stream, StringVector *vec, char *separator) {
 	for (int i = 0; i < vec->size; ++i) {
 		fprintf(stream, "%s%s", (vec->data)[i], separator);
 	}

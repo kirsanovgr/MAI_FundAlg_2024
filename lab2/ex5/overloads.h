@@ -8,7 +8,6 @@
 
 #include "../SystemErrors/errors.h"
 #include "../vector/stringvector.h"
-#include "../vector/charvector.h"
 
 int overfprintf(FILE * restrict stream, const char * format, ...);
 

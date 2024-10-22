@@ -87,16 +87,16 @@ int overfscanf(FILE *restrict stream, char *format, ...) {
 	char c;
 	const char *p = format;
 	while (p) {
-		if (*p == '%') {
+		if (*p == '%' && *p != format[SizeString(format) - 1]) {
 			++p;
 			if (*p == '%') {
 				++p;
-			} else if (*p == 'R' && *(p + 1) == 'o') {
+			} else if (SizeString(p) >= 2 && *p == 'R' && *(p + 1) == 'o') {
 				int *res = va_arg(factor, int *);
 				int i = 0;
 				char input_char;
 				char input_str[(int)pow(2, sizeof(int) * 8) / 1000 + 1];
-				while ((input_char = getc(stream)) &&
+				while ((input_char = getc(stream)) != EOF &&
 				       (input_char == 'M' || input_char == 'D' || input_char == 'C' || input_char == 'L' ||
 				        input_char == 'V' || input_char == 'I' || input_char == 'X')) {
 					input_str[i++] = input_char;
@@ -110,12 +110,12 @@ int overfscanf(FILE *restrict stream, char *format, ...) {
 				}
 				count++;
 				p += 2;
-			} else if (*p == 'Z' && *(p + 1) == 'r') {
+			} else if (SizeString(p) >= 2 && *p == 'Z' && *(p + 1) == 'r') {
 				unsigned int *res = va_arg(factor, unsigned int *);
 				char input_char;
 				char input_str[50];
 				int i = 0;
-				while ((input_char = getc(stream)) && (input_char == '0' || input_char == '1')) {
+				while ((input_char = getc(stream)) != EOF && (input_char == '0' || input_char == '1')) {
 					input_str[i++] = input_char;
 				}
 				errorMsg = ZeckendorfTOUInt(input_str, res);
@@ -126,14 +126,14 @@ int overfscanf(FILE *restrict stream, char *format, ...) {
 				}
 				count++;
 				p += 2;
-			} else if (*p == 'C' && *(p + 1) == 'v') {
+			} else if (SizeString(p) >= 2 && *p == 'C' && *(p + 1) == 'v') {
 				int *res = va_arg(factor, int *);
 				int base = va_arg(factor, int);
 				if(base < 2 || base > 36) base = 10;
 				*res = 0;
 				char str[100], input_char;
 				int i = 0;
-				while (((input_char = getc(stream)) && sequence_number(input_char) != -1 &&
+				while (((input_char = getc(stream)) != EOF && sequence_number(input_char) != -1 &&
 				       sequence_number(input_char) < base && IsNotUpper(input_char)) || input_char == '-') {
 					str[i++] = input_char;
 				}
@@ -146,7 +146,7 @@ int overfscanf(FILE *restrict stream, char *format, ...) {
 				count += 1;
 				fseek(stream, -1, SEEK_CUR);
 				p += 2;
-			} else if ((*p == 'C' && *(p + 1) == 'V')) {
+			} else if (SizeString(p) >= 2 && (*p == 'C' && *(p + 1) == 'V')) {
 				int *res = va_arg(factor, int *);
 				int base = va_arg(factor, int);
 				if(base < 2 || base > 36) base = 10;
@@ -211,7 +211,7 @@ int oversscanf(char *buffer, char *format, ...) {
 			++p;
 			if (*p == '%') {
 				++p;
-			} else if (*p == 'R' && *(p + 1) == 'o') {
+			} else if (*p != format[SizeString(format) - 1] && *p == 'R' && *(p + 1) == 'o') {
 				int *res = va_arg(factor, int *);
 				int i = 0;
 				char input_char;
@@ -231,7 +231,7 @@ int oversscanf(char *buffer, char *format, ...) {
 				}
 				count++;
 				p += 2;
-			} else if (*p == 'Z' && *(p + 1) == 'r') {
+			} else if (*p != format[SizeString(format) - 1] && *p == 'Z' && *(p + 1) == 'r') {
 				unsigned int *res = va_arg(factor, unsigned int *);
 				char input_char;
 				char input_str[50];
@@ -248,7 +248,7 @@ int oversscanf(char *buffer, char *format, ...) {
 				}
 				count++;
 				p += 2;
-			} else if (*p == 'C' && *(p + 1) == 'v') {
+			} else if (*p != format[SizeString(format) - 1] && *p == 'C' && *(p + 1) == 'v') {
 				int *res = va_arg(factor, int *);
 				int base = va_arg(factor, int);
 				if(base < 2 || base > 36) base = 10;
@@ -269,7 +269,7 @@ int oversscanf(char *buffer, char *format, ...) {
 				count += 1;
 				buffer--;
 				p += 2;
-			} else if ((*p == 'C' && *(p + 1) == 'V')) {
+			} else if (*p != format[SizeString(format) - 1] && (*p == 'C' && *(p + 1) == 'V')) {
 				int *res = va_arg(factor, int *);
 				int base = va_arg(factor, int);
 				if(base < 2 || base > 36) base = 10;
@@ -291,12 +291,12 @@ int oversscanf(char *buffer, char *format, ...) {
 				buffer--;
 				p += 2;
 			} else {
-				char tmp[SizeString(format)];
+				char tmp[SizeString(format) + 1];
 				if (str_to_k(&p, "%", tmp)) {
 					va_end(factor);
 					return count;
 				}
-				char tmp_str[SizeString(format)];
+				char tmp_str[SizeString(format) + 1];
 				tmp_str[0] = '\0';
 				my_strcat(tmp_str, "%");
 				my_strcat(tmp_str, tmp);

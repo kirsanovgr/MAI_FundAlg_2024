@@ -41,10 +41,10 @@ error_msg int_to_zeckendorf(unsigned int num, char *zeckendorf) {
 }
 
 void From10to(int number, char *result, int based) {
-	char tmp[16];
+	char tmp[sizeof(int) * 8 + 1];
 	int index = 0;
 	int fl = 0;
-	if(number < 0){
+	if (number < 0) {
 		fl = 1;
 		number *= -1;
 	}
@@ -56,10 +56,10 @@ void From10to(int number, char *result, int based) {
 		index++;
 		number /= based;
 	}
-	if(fl) {
+	if (fl) {
 		tmp[index++] = '-';
 	}
-	for (int i = 0; i <= index; i++) {
+	for (int i = 0; i < index; i++) {
 		result[i] = tmp[index - i - 1];
 	}
 	result[index] = '\0';
@@ -86,14 +86,14 @@ char back_sequence_number(int x) {
 	return 'a' + (x - 10);
 }
 
-int IsLower(char *s) {
+int IsLower(const char *s) {
 	for (int i = 0; s[i] != '\0'; ++i) {
 		if (s[i] >= 'A' && s[i] <= 'Z') return 0;
 	}
 	return 1;
 }
 
-int IsUpper(char *s) {
+int IsUpper(const char *s) {
 	for (int i = 0; s[i] != '\0'; ++i) {
 		if (s[i] >= 'a' && s[i] <= 'z') return 0;
 	}
@@ -120,13 +120,16 @@ void memory_dump(void *ptr, size_t size, char *result) {
 	for (size_t i = 0; i < size; i++) {
 		char tmp[10];
 		tmp[0] = '\0';
-		sprintf(tmp, "%08b ", bytes[i]);
+		for (int j = 7; j >= 0; --j) {
+			sprintf(tmp + SizeString(tmp), "%u", (bytes[i] >> j) & 1);
+		}
+		my_strcat(tmp, " ");
 		my_strcat(result, tmp);
 	}
 }
 
 int overfprintf(FILE *restrict stream, const char *format, ...) {
-	if(!stream) return INPUT_FILE_ERROR;
+	if (!stream) return INPUT_FILE_ERROR;
 	int count = 0;
 	const char *p = format;
 	va_list factor;
@@ -136,42 +139,42 @@ int overfprintf(FILE *restrict stream, const char *format, ...) {
 			p++;
 			if (*p == '%') {
 				count++;
-			} else if (*p == 'R' && *(p + 1) == 'o') {
+			} else if (SizeString(p) >= 2 && *p == 'R' && *(p + 1) == 'o') {
 				// Римские числа
 				p += 2;
 				int x = va_arg(factor, int);
 				if (x <= 0) return -1;
-				char vec[(int)pow(2, sizeof(int) * 8) / 1000 + 1];
+				char vec[100];
 				int_to_roman(x, vec);
 				fprintf(stream, "%s", vec);
 				count += SizeString(vec);
-			} else if (*p == 'Z' && *(p + 1) == 'r') {
+			} else if (SizeString(p) >= 2 && *p == 'Z' && *(p + 1) == 'r') {
 				p += 2;
 				unsigned int x = va_arg(factor, unsigned int);
-				char vec[33];
+				char vec[34];
 				int_to_zeckendorf(x, vec);
 				fprintf(stream, "%s", vec);
 				count += SizeString(vec);
-			} else if (*p == 'C' && *(p + 1) == 'v') {
+			} else if (SizeString(p) >= 2 && *p == 'C' && *(p + 1) == 'v') {
 				p += 2;
 				int x = va_arg(factor, int);
 				int base = va_arg(factor, int);
 				if (base < 2 || base > 36) base = 10;
-				char vec[sizeof(int) * 8];
+				char vec[(sizeof(int) + 1) * 8];
 				From10to(x, vec, base);
 				fprintf(stream, "%s", vec);
 				count += SizeString(vec);
-			} else if (*p == 'C' && *(p + 1) == 'V') {
+			} else if (SizeString(p) >= 2 && *p == 'C' && *(p + 1) == 'V') {
 				p += 2;
 				int x = va_arg(factor, int);
 				int base = va_arg(factor, int);
 				if (base < 2 || base > 36) base = 10;
-				char vec[sizeof(int) * 8];
+				char vec[(sizeof(int) + 1) * 8];
 				From10to(x, vec, base);
 				ToUpper(vec);
 				fprintf(stream, "%s", vec);
 				count += SizeString(vec);
-			} else if (*p == 't' && *(p + 1) == 'o') {
+			} else if (SizeString(p) >= 2 && *p == 't' && *(p + 1) == 'o') {
 				p += 2;
 				char *str = va_arg(factor, char *);
 				int base = va_arg(factor, int);
@@ -183,7 +186,7 @@ int overfprintf(FILE *restrict stream, const char *format, ...) {
 				}
 				int n = fprintf(stream, "%ld", number);
 				count += n;
-			} else if (*p == 'T' && *(p + 1) == 'O') {
+			} else if (SizeString(p) >= 2 && *p == 'T' && *(p + 1) == 'O') {
 				p += 2;
 				char *str = va_arg(factor, char *);
 				int base = va_arg(factor, int);
@@ -195,7 +198,7 @@ int overfprintf(FILE *restrict stream, const char *format, ...) {
 				}
 				int n = fprintf(stream, "%ld", number);
 				count += n;
-			} else if (*p == 'm' && *(p + 1) == 'i') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'i') {
 				p += 2;
 				int32_t value = va_arg(factor, int32_t);
 				char result[8 * (sizeof(value) + 1)];
@@ -203,7 +206,7 @@ int overfprintf(FILE *restrict stream, const char *format, ...) {
 				memory_dump(&value, sizeof(value), result);
 				fprintf(stream, "%s", result);
 				count += SizeString(result);
-			} else if (*p == 'm' && *(p + 1) == 'u') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'u') {
 				p += 2;
 				uint32_t value = va_arg(factor, uint32_t);
 				char result[8 * (sizeof(value) + 1)];
@@ -211,7 +214,7 @@ int overfprintf(FILE *restrict stream, const char *format, ...) {
 				memory_dump(&value, sizeof(value), result);
 				fprintf(stream, "%s", result);
 				count += SizeString(result);
-			} else if (*p == 'm' && *(p + 1) == 'd') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'd') {
 				p += 2;
 				double value = va_arg(factor, double);
 				char result[8 * (sizeof(value) + 1)];
@@ -219,7 +222,7 @@ int overfprintf(FILE *restrict stream, const char *format, ...) {
 				memory_dump(&value, sizeof(value), result);
 				fprintf(stream, "%s", result);
 				count += SizeString(result);
-			} else if (*p == 'm' && *(p + 1) == 'f') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'f') {
 				p += 2;
 				float value = va_arg(factor, double);
 				char result[8 * (sizeof(value) + 1)];
@@ -266,24 +269,24 @@ int oversprintf(char string[], const char *format, ...) {
 			p++;
 			if (*p == '%') {
 				count++;
-			} else if (*p == 'R' && *(p + 1) == 'o') {
+			} else if (SizeString(p) >= 2 && *p == 'R' && *(p + 1) == 'o') {
 				// Римские числа
 				p += 2;
 				int x = va_arg(factor, int);
 				if (x <= 0) return -1;
 				// размер = 2 ^ (бит в int) / M(1000 в Римской сс)
-				char vec[(int)pow(2, sizeof(int) * 8) / 1000 + 1];
+				char vec[1000];
 				int_to_roman(x, vec);
 				my_strcat(string, vec);
 				count += SizeString(vec);
-			} else if (*p == 'Z' && *(p + 1) == 'r') {
+			} else if (SizeString(p) >= 2 && *p == 'Z' && *(p + 1) == 'r') {
 				p += 2;
 				unsigned int x = va_arg(factor, unsigned int);
-				char vec[33];
+				char vec[34];
 				int_to_zeckendorf(x, vec);
 				my_strcat(string, vec);
 				count += SizeString(vec);
-			} else if (*p == 'C' && *(p + 1) == 'v') {
+			} else if (SizeString(p) >= 2 && *p == 'C' && *(p + 1) == 'v') {
 				p += 2;
 				int x = va_arg(factor, int);
 				int base = va_arg(factor, int);
@@ -292,7 +295,7 @@ int oversprintf(char string[], const char *format, ...) {
 				From10to(x, vec, base);
 				my_strcat(string, vec);
 				count += SizeString(vec);
-			} else if (*p == 'C' && *(p + 1) == 'V') {
+			} else if (SizeString(p) >= 2 && *p == 'C' && *(p + 1) == 'V') {
 				p += 2;
 				int x = va_arg(factor, int);
 				int base = va_arg(factor, int);
@@ -302,7 +305,7 @@ int oversprintf(char string[], const char *format, ...) {
 				ToUpper(vec);
 				my_strcat(string, vec);
 				count += SizeString(vec);
-			} else if (*p == 't' && *(p + 1) == 'o') {
+			} else if (SizeString(p) >= 2 && *p == 't' && *(p + 1) == 'o') {
 				p += 2;
 				char *str = va_arg(factor, char *);
 				int base = va_arg(factor, int);
@@ -314,7 +317,7 @@ int oversprintf(char string[], const char *format, ...) {
 				}
 				int n = sprintf(string + SizeString(string), "%ld", number);
 				count += n;
-			} else if (*p == 'T' && *(p + 1) == 'O') {
+			} else if (SizeString(p) >= 2 && *p == 'T' && *(p + 1) == 'O') {
 				p += 2;
 				char *str = va_arg(factor, char *);
 				int base = va_arg(factor, int);
@@ -326,7 +329,7 @@ int oversprintf(char string[], const char *format, ...) {
 				}
 				int n = sprintf(string + SizeString(string), "%ld", number);
 				count += n;
-			} else if (*p == 'm' && *(p + 1) == 'i') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'i') {
 				p += 2;
 				int32_t value = va_arg(factor, int32_t);
 				char result[8 * (sizeof(value) + 1)];
@@ -334,7 +337,7 @@ int oversprintf(char string[], const char *format, ...) {
 				memory_dump(&value, sizeof(value), result);
 				my_strcat(string, result);
 				count += SizeString(result);
-			} else if (*p == 'm' && *(p + 1) == 'u') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'u') {
 				p += 2;
 				uint32_t value = va_arg(factor, uint32_t);
 				char result[8 * (sizeof(value) + 1)];
@@ -342,7 +345,7 @@ int oversprintf(char string[], const char *format, ...) {
 				memory_dump(&value, sizeof(value), result);
 				my_strcat(string, result);
 				count += SizeString(result);
-			} else if (*p == 'm' && *(p + 1) == 'd') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'd') {
 				p += 2;
 				double value = va_arg(factor, double);
 				char result[8 * (sizeof(value) + 1)];
@@ -350,14 +353,13 @@ int oversprintf(char string[], const char *format, ...) {
 				memory_dump(&value, sizeof(value), result);
 				my_strcat(string, result);
 				count += SizeString(result);
-			} else if (*p == 'm' && *(p + 1) == 'f') {
+			} else if (SizeString(p) >= 2 && *p == 'm' && *(p + 1) == 'f') {
 				p += 2;
 				float value = va_arg(factor, double);
 				char result[8 * (sizeof(value) + 1)];
 				result[0] = '\0';
 				memory_dump(&value, sizeof(value), result);
 				my_strcat(string, result);
-				;
 				count += SizeString(result);
 			} else {
 				char tmp[SizeString(format)];

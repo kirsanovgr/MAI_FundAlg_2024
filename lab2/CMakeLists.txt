@@ -97,7 +97,6 @@ add_executable(ex10 ex10/ex10.c ex10/ex10.h
 target_link_libraries(ex2 m check subunit rt pthread)
 target_link_libraries(ex3 m)
 target_link_libraries(ex4 m check subunit rt pthread)
-target_link_libraries(ex5 m check subunit rt pthread)
 target_link_libraries(ex6 check subunit rt pthread)
 target_link_libraries(ex7 m)
 target_link_libraries(ex9 m)
