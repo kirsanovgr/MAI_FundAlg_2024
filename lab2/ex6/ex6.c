@@ -211,7 +211,7 @@ int oversscanf(char *buffer, char *format, ...) {
 			++p;
 			if (*p == '%') {
 				++p;
-			} else if (*p != format[SizeString(format) - 1] && *p == 'R' && *(p + 1) == 'o') {
+			} else if (SizeString(p) >= 2  && *p == 'R' && *(p + 1) == 'o') {
 				int *res = va_arg(factor, int *);
 				int i = 0;
 				char input_char;
@@ -231,7 +231,7 @@ int oversscanf(char *buffer, char *format, ...) {
 				}
 				count++;
 				p += 2;
-			} else if (*p != format[SizeString(format) - 1] && *p == 'Z' && *(p + 1) == 'r') {
+			} else if (SizeString(p) >= 2  && *p == 'Z' && *(p + 1) == 'r') {
 				unsigned int *res = va_arg(factor, unsigned int *);
 				char input_char;
 				char input_str[50];
@@ -248,7 +248,7 @@ int oversscanf(char *buffer, char *format, ...) {
 				}
 				count++;
 				p += 2;
-			} else if (*p != format[SizeString(format) - 1] && *p == 'C' && *(p + 1) == 'v') {
+			} else if (SizeString(p) >= 2  && *p == 'C' && *(p + 1) == 'v') {
 				int *res = va_arg(factor, int *);
 				int base = va_arg(factor, int);
 				if(base < 2 || base > 36) base = 10;
@@ -269,7 +269,7 @@ int oversscanf(char *buffer, char *format, ...) {
 				count += 1;
 				buffer--;
 				p += 2;
-			} else if (*p != format[SizeString(format) - 1] && (*p == 'C' && *(p + 1) == 'V')) {
+			} else if (SizeString(p) >= 2  && (*p == 'C' && *(p + 1) == 'V')) {
 				int *res = va_arg(factor, int *);
 				int base = va_arg(factor, int);
 				if(base < 2 || base > 36) base = 10;
