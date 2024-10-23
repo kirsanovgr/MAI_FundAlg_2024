@@ -36,12 +36,17 @@ char* column_addition(const char* num1, const char* num2, int base) {
     int max_len = (len1 > len2) ? len1 : len2;
 
     char* result = (char*)malloc(max_len + 2); // +1 для переноса, +1 для нуля
-    if (!result) return NULL;
-
+    if (result == NULL) {
+        return NULL;
+    }
+    
     result[max_len + 1] = '\0';
     int carry = 0;
 
-    for (int i = len1 - 1, j = len2 - 1, k = max_len; k >= 0; k--) {
+    int i = len1 - 1;
+    int j = len2 - 1;
+    int k = max_len;
+    for (int k = max_len; k >= 0; k--) {
         int digit1 = (i >= 0) ? char_to_value(num1[i]) : 0;
         int digit2 = (j >= 0) ? char_to_value(num2[j]) : 0;
 
@@ -103,7 +108,9 @@ char* sum_in_base(int base, int count, ...) {
     va_start(args, count);
 
     char* total = malloc(2);
-    if (!total) return NULL;
+    if (total == NULL) {
+        return NULL;
+    }
     total[0] = '0';
     total[1] = '\0';
 

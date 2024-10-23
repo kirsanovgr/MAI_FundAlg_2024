@@ -5,7 +5,8 @@ typedef enum {
     SUCCESS = 0,
     MISSING_ARGUMENTS_ERROR,
     ERROR_INPUT,
-    ERROR_INVALID_FLAG
+    ERROR_INVALID_FLAG,
+    ERROR_MEMORY_ALLOCATION
 } Status;
 
 size_t str_len(const char* str) {
@@ -46,7 +47,7 @@ char* uppercase_odd_positions(const char* str) {
 
     for (size_t i = 0; i < len; i++) {
         if (i % 2 == 1 && str[i] >= 'a' && str[i] <= 'z') {
-            result[i] = str[i] - 32; // Преобразуем символ в верхний регистр
+            result[i] = str[i] - ('a' - 'A'); // Преобразуем символ в верхний регистр (было 32, потому что разница между ними 32)
         } else {
             result[i] = str[i];
         }
@@ -98,6 +99,7 @@ char* concatenate_random(int seed, int argc, char** argv) {
     int count = argc - 3;  // Учитываем три первых аргумента
     if (count < 2) {
         printf("Недостаточно строк для конкатенации\n");
+        return NULL;
     }
 
     // Выделяем память для результата
@@ -109,14 +111,19 @@ char* concatenate_random(int seed, int argc, char** argv) {
     char* result = (char*)malloc((total_length + 1) * sizeof(char));
     if (result == NULL) {
         printf("Ошибка: Не удалось выделить память\n");
+        return NULL;
     }
-
-    result[0] = '\0';  // Начинаем с пустой строки
 
     // Конкатенируем строки в случайном порядке
     int* indices = (int*)malloc(count * sizeof(int));
+    if (indices == NULL) {
+        free(result);
+        return NULL;
+    }
+
+    // Инициализация индексов
     for (int i = 0; i < count; i++) {
-        indices[i] = i + 3;  // Индексы строк начиная с 3-го аргумента
+        indices[i] = i + 3;
     }
 
     // Перемешиваем индексы
@@ -127,24 +134,28 @@ char* concatenate_random(int seed, int argc, char** argv) {
         indices[j] = temp;
     }
 
-    // Конкатенируем строки
+    // Заполняем результирующую строку
+    size_t current_position = 0;
     for (int i = 0; i < count; i++) {
-        for (size_t j = 0; j < str_len(argv[indices[i]]); j++) {
-            result[str_len(result)] = argv[indices[i]][j];
+        size_t len = str_len(argv[indices[i]]);
+        for (size_t j = 0; j < len; j++) {
+            result[current_position++] = argv[indices[i]][j];
         }
     }
-    result[total_length] = '\0';
+    result[current_position] = '\0';  // Устанавливаем конец строки
 
     free(indices);
     return result;
 }
 
 // Преобразование строки в unsigned int
-unsigned int my_atof(const char *str) {
+unsigned int string_to_uint(const char *str) {
     unsigned int result = 0;
     while (*str == ' ') str++;
     if (*str == '+' || *str == '-') {
-        if (*str == '-') return -1;
+        if (*str == '-') {
+            return -1;
+        } 
         str++;
     }
     while (*str >= '0' && *str <= '9') {
@@ -154,60 +165,108 @@ unsigned int my_atof(const char *str) {
     return result;
 }
 
-int main(int argc, char** argv) {
+typedef Status (*FlagHandler)(int argc, char** argv);
+
+Status handle_len(int argc, char** argv) {
     if (argc < 3) {
-        printf("Ввод: <флаг> <строка>\n");
+        return MISSING_ARGUMENTS_ERROR;
+    }
+    printf("Длина: %d\n", len_string(argv[2]));
+    return SUCCESS;
+}
+
+Status handle_reverse(int argc, char** argv) {
+    if (argc < 3) {
+        return MISSING_ARGUMENTS_ERROR;
+    } 
+    char* reversed = reverse_string(argv[2]);
+    if (reversed == NULL) {
+        return ERROR_MEMORY_ALLOCATION;
+    }
+    printf("Реверс: %s\n", reversed);
+    free(reversed);
+    return SUCCESS;
+}
+
+Status handle_uppercase(int argc, char** argv) {
+    if (argc < 3) {
+        return MISSING_ARGUMENTS_ERROR;
+    } 
+    char* result = uppercase_odd_positions(argv[2]);
+    if (result == NULL) {
+        return ERROR_MEMORY_ALLOCATION;
+    } 
+    printf("Верхний регистр на нечётных позициях: %s\n", result);
+    free(result);
+    return SUCCESS;
+}
+
+Status handle_sort(int argc, char** argv) {
+    if (argc < 3) {
+        return MISSING_ARGUMENTS_ERROR;
+    } 
+    char* sorted = sort_string(argv[2]);
+    if (sorted == NULL) {
+        return ERROR_MEMORY_ALLOCATION;
+    }
+    printf("Отсортировано: %s\n", sorted);
+    free(sorted);
+    return SUCCESS;
+}
+
+Status handle_concatenate(int argc, char** argv) {
+    if (argc < 4) {
+        return MISSING_ARGUMENTS_ERROR;
+    }
+    unsigned int seed = string_to_uint(argv[2]);
+    char* concatenated = concatenate_random(seed, argc, argv);
+    if (concatenated == NULL) {
+        return ERROR_MEMORY_ALLOCATION;
+    }
+    printf("Конкатенация: %s\n", concatenated);
+    free(concatenated);
+    return SUCCESS;
+}
+
+typedef struct {
+    const char* flag;
+    FlagHandler handler;
+} FlagCommand;
+
+FlagCommand commands[] = {
+    {"-l", handle_len},
+    {"-r", handle_reverse},
+    {"-u", handle_uppercase},
+    {"-n", handle_sort},
+    {"-c", handle_concatenate}
+};
+
+Status parse_flag(int argc, char** argv) {
+    if (argc < 2) {
         return ERROR_INPUT;
     }
-
-    char* flag = argv[1];
-    char* line = argv[2];
-
-    if (flag[0] == '-') {
-        if (flag[1] == 'l') {
-            printf("Длина: %d\n", len_string(line));
-        } 
-        else if (flag[1] == 'r') {
-            char* reversed = reverse_string(line);
-            if (reversed != NULL) {
-                printf("Реверс: %s\n", reversed);
-                free(reversed);
-            }
-        } 
-        else if (flag[1] == 'u') {
-            char* result = uppercase_odd_positions(line);
-            if (result != NULL) {
-                printf("Верхний регистр на нечётных позициях: %s\n", result);
-                free(result);
-            }
-        } 
-        else if (flag[1] == 'n') {
-            char* sorted = sort_string(line);
-            if (sorted != NULL) {
-                printf("Отсортировано: %s\n", sorted);
-                free(sorted);
-            }
-        } 
-        else if (flag[1] == 'c') {
-            if (argc < 4) {
-                printf("Ошибка: Недостаточно аргументов для флага -c\n");
-                return MISSING_ARGUMENTS_ERROR;
-            }
-            unsigned int seed = my_atof(argv[2]);
-            char* concatenated = concatenate_random(seed, argc, argv);
-            if (concatenated != NULL) {
-                printf("Конкатенация: %s\n", concatenated);
-                free(concatenated);
-            }
-        } 
-        else {
-            printf("Ошибка: Неизвестный флаг %s\n", flag);
-            return ERROR_INVALID_FLAG;
+    
+    for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
+        if (str_len(commands[i].flag) == 2 && argv[1][0] == '-' && argv[1][1] == commands[i].flag[1]) {
+            return commands[i].handler(argc, argv);
         }
-    } else {
-        printf("Ошибка: Неправильный формат флага\n");
-        return ERROR_INVALID_FLAG;
     }
+    return ERROR_INVALID_FLAG;
+}
 
+int main(int argc, char** argv) {
+    Status status = parse_flag(argc, argv);
+    if (status != SUCCESS) {
+        if (status == MISSING_ARGUMENTS_ERROR) {
+            printf("Ошибка: Недостаточно аргументов\n");
+        } else if (status == ERROR_INPUT) {
+            printf("Ошибка: Неправильный ввод\n");
+        } else if (status == ERROR_INVALID_FLAG) {
+            printf("Ошибка: Неизвестный флаг %s\n", argv[1]);
+        } else if (status == ERROR_MEMORY_ALLOCATION) {
+            printf("Ошибка: Не удалось выделить память\n");
+        }
+        return status;
+    }
     return 0;
 }

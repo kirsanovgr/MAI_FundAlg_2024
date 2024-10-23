@@ -11,7 +11,7 @@ StatusCode Dychotomy(double x0, double x1, double (*func)(double), double epsilo
         return ERROR_NO_ROOT;
     }
 
-    double res = (x1 + x0) / 2.0;
+    double res = (x1 + x0) / 2;
     double last = x0;
 
     while (fabsl(func(res)) >= epsilon && fabsl(res - last) >= epsilon) {

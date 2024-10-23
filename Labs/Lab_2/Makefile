@@ -106,7 +106,7 @@ test: $(TEST_TARGETS)
 	@echo "Все тесты прошли успешно"
 
 test_task1_command_args_1:
-	@$(FAILED_CMD) "1.a" 2 "Ввод: <флаг> <строка>"
+	@$(FAILED_CMD) "1.a" 2 "Ошибка: Неправильный ввод"
 	@echo "TEST 1 PASSED"
 
 test_task1_lflag_2:
