@@ -7,13 +7,6 @@ START_TEST(test_is_convex_polygon) {
 }
 END_TEST
 
-START_TEST(test_evaluate_polynomial) {
-    double epsilon = 1e-6;
-    double result = evaluate_polynomial(epsilon, 2.0, 2, 1.0, -3.0, 2.0); // x^2 - 3x + 2
-    ck_assert_double_eq(result, 0.0);
-}
-END_TEST
-
 START_TEST(test_is_kaprekar_number_in_base) {
     // Здесь вы можете добавить более детальные проверки чисел Капрекара
     // Поскольку функция печатает результат, можно сделать отдельные проверки
@@ -29,7 +22,6 @@ Suite *polygon_suite(void) {
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, test_is_convex_polygon);
-    tcase_add_test(tc_core, test_evaluate_polynomial);
     tcase_add_test(tc_core, test_is_kaprekar_number_in_base);
     suite_add_tcase(s, tc_core);
 

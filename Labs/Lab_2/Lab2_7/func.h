@@ -1,5 +1,4 @@
-#ifndef FUNC_H
-#define FUNC_H
+#pragma once
 
 typedef enum {
     SUCCESS = 0,
@@ -8,5 +7,3 @@ typedef enum {
 } StatusCode;
 
 StatusCode Dychotomy(double x0, double x1, double (*func)(double), double epsilon, double *root);
-
-#endif

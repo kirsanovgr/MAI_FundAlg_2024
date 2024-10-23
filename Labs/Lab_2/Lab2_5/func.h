@@ -1,5 +1,4 @@
-#ifndef FUNC_H
-#define FUNC_H
+#pragma once
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -15,5 +14,3 @@ void print_fibonacci_reverse(int n, FILE *stream);
 void print_in_base(int num, int base, FILE *stream, int is_upper);
 void print_memory_representation(const void *ptr, size_t size, FILE *stream);
 int overfprintf(FILE *stream, const char *format, ...);
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef FUNC_H
-#define FUNC_H
+#pragma once
 
 #include <stdlib.h>
 
@@ -14,5 +13,3 @@ size_t my_strlen(const char *str);
 char* column_addition(const char* num1, const char* num2, int base);
 
 char* sum_in_base(int base, int count, ...);
-
-#endif 

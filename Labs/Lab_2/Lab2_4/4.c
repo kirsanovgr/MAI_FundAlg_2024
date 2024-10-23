@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "test_func.h"
 
+// Функция для вычисления длины строки
 size_t my_strlen(const char *str) {
     const char *s = str;
     while (*s) {
@@ -11,15 +12,18 @@ size_t my_strlen(const char *str) {
     return s - str;
 }
 
+// Преобразование строки в число с базой от 2 до 36
 long long my_strtoll(const char *nptr, char **endptr, int base) {
     const char *s = nptr;
     long long result = 0;
     int sign = 1;
 
-   while (*s == ' ') {
+    // Пропуск пробелов
+    while (*s == ' ') {
         s++;
     }
 
+    // Обработка знака
     if (*s == '-') {
         sign = -1;
         s++;
@@ -27,31 +31,21 @@ long long my_strtoll(const char *nptr, char **endptr, int base) {
         s++;
     }
 
-    // Если база 0, устанавливаем ее в 10, если строка начинается с "0x" или "0X", устанавливаем в 16
-    if (base == 0) {
-        if (*s == '0') {
-            s++;
-            if (*s == 'x' || *s == 'X') {
-                base = 16;
-                s++;
-            } else {
-                base = 8;
-            }
-        } else {
-            base = 10;
-        }
+    // Если база 0 или 16, ошибка
+    if (base == 0 || base == 16) {
+        if (endptr) *endptr = (char *)nptr;
+        return 0;
     }
 
-    // Проверка на допустимую базу
+    // Проверка допустимой базы
     if (base < 2 || base > 36) {
-        if (endptr) *endptr = (char *)nptr; // Устанавливаем указатель на начало
+        if (endptr) *endptr = (char *)nptr;
         return 0;
     }
 
     // Преобразование строки в число
     while (*s) {
         int digit = 0;
-
         if (*s >= '0' && *s <= '9') {
             digit = *s - '0';
         } else if (*s >= 'a' && *s <= 'z') {
@@ -59,18 +53,19 @@ long long my_strtoll(const char *nptr, char **endptr, int base) {
         } else if (*s >= 'A' && *s <= 'Z') {
             digit = *s - 'A' + 10;
         } else {
-            break; // Прекращаем, если символ не допустимый
+            break;
+            return INVALID_ARGUMENT;  // Прекращаем при недопустимом символе
         }
 
         if (digit >= base) {
-            break; // Прекращаем, если цифра больше базы
+            break;
+            return INVALID_ARGUMENT; 
         }
 
         result = result * base + digit;
         s++;
     }
 
-    // Устанавливаем указатель на конец преобразованной строки
     if (endptr) {
         *endptr = (char *)s;
     }
@@ -78,14 +73,15 @@ long long my_strtoll(const char *nptr, char **endptr, int base) {
     return result * sign;
 }
 
-int is_convex_polygon(double epsilon, int num_points, ...) {
+// Определение, является ли многоугольник выпуклым
+int is_convex_polygon(int num_points, ...) {
     if (num_points < 3) {
         return INVALID_ARGUMENT;  // Многоугольник должен иметь хотя бы 3 вершины
     }
 
     va_list args;
     va_start(args, num_points);
-    
+
     double x1 = va_arg(args, double);
     double y1 = va_arg(args, double);
     double x2 = va_arg(args, double);
@@ -98,16 +94,16 @@ int is_convex_polygon(double epsilon, int num_points, ...) {
 
         double cross_product = (x2 - x1) * (y3 - y2) - (y2 - y1) * (x3 - x2);
 
-        if (cross_product < -epsilon) {
+        if (cross_product < 0) {
             if (sign == 1) {
                 va_end(args);
-                return CONVEX;
+                return NOT_CONVEX;
             }
             sign = -1;
-        } else if (cross_product > epsilon) {
+        } else if (cross_product > 0) {
             if (sign == -1) {
                 va_end(args);
-                return CONVEX;
+                return NOT_CONVEX;
             }
             sign = 1;
         }
@@ -119,17 +115,18 @@ int is_convex_polygon(double epsilon, int num_points, ...) {
     }
 
     va_end(args);
-    return NOT_CONVEX;
+    return CONVEX;
 }
 
-double evaluate_polynomial(double epsilon, double x, int degree, ...) {
+// Вычисление значения многочлена
+double evaluate_polynomial(double x, int degree, ...) {
     if (degree < 0) {
-        return INVALID_ARGUMENT;  // Степень многочлена не может быть отрицательной
+        return INVALID_ARGUMENT;
     }
 
     va_list args;
     va_start(args, degree);
-    
+
     double result = va_arg(args, double);  // Коэффициент при старшей степени
     for (int i = 1; i <= degree; i++) {
         double coeff = va_arg(args, double);
@@ -137,13 +134,13 @@ double evaluate_polynomial(double epsilon, double x, int degree, ...) {
     }
 
     va_end(args);
-    
     return result;
 }
 
+// Проверка, является ли число числом Капрекара в заданной системе счисления
 int is_kaprekar_number_in_base(int base, int num_strings, ...) {
     if (base < 2 || base > 36) {
-        return INVALID_ARGUMENT; 
+        return INVALID_ARGUMENT;
     }
 
     va_list args;
@@ -155,7 +152,7 @@ int is_kaprekar_number_in_base(int base, int num_strings, ...) {
         long long number = my_strtoll(number_str, &end_ptr, base);
 
         if (*end_ptr != '\0') {
-            continue;  // Неверное строковое представление числа
+            continue;
         }
 
         long long square = number * number;

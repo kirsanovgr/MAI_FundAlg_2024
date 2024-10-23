@@ -45,7 +45,6 @@ char* column_addition(const char* num1, const char* num2, int base) {
 
     int i = len1 - 1;
     int j = len2 - 1;
-    int k = max_len;
     for (int k = max_len; k >= 0; k--) {
         int digit1 = (i >= 0) ? char_to_value(num1[i]) : 0;
         int digit2 = (j >= 0) ? char_to_value(num2[j]) : 0;

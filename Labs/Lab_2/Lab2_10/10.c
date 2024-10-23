@@ -4,6 +4,10 @@
 #include <math.h>
 #include <stdio.h>
 
+typedef enum {
+    SUCCESS = 0
+} Status;
+
 // Функция для вычисления производной многочлена в точке x
 double derivative(int order, int n, double a, const double *coeff) {
     double result = 0.0;
@@ -22,7 +26,6 @@ double derivative(int order, int n, double a, const double *coeff) {
 int transform_polynomial(double epsilon, double a, int n, double **result, ...) {
     *result = (double *)malloc((n + 1) * sizeof(double));
     if (*result == NULL) {
-        return NULL;
     }
 
     va_list args;
@@ -31,7 +34,6 @@ int transform_polynomial(double epsilon, double a, int n, double **result, ...) 
     double *f = (double *)malloc((n + 1) * sizeof(double));
     if (f == NULL) {
         free(*result);
-        return NULL;
     }
     
     // Считываем коэффициенты исходного многочлена
@@ -51,7 +53,7 @@ int transform_polynomial(double epsilon, double a, int n, double **result, ...) 
     }
     
     free(f);
-    return 0;
+    return SUCCESS;
 }
 
 void print_polynomial(const double *coeff, int n, double a) {
