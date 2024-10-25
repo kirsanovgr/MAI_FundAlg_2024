@@ -29,7 +29,7 @@ FAILED_IFILE_RFILE_OFILE=$(BASH) $(TEST_TEMPLATES_DIR)/failed_ifile_rfile_ofile
 .PHONY: all clean
 
 all:
-	for dir in Lab2_1 Lab2_2 Lab2_3 Lab2_4 Lab2_5 Lab2_7 Lab2_8 Lab2_9 Lab2_10; do \
+	for dir in Lab2_1 Lab2_2 Lab2_3 Lab2_4 Lab2_5 Lab2_6 Lab2_7 Lab2_8 Lab2_9 Lab2_10; do \
 		cd $$dir ;\
 		make ;\
 		mv *.a .. ;\
@@ -156,7 +156,7 @@ test_task_allWithOut12:
 	@./2.a
 	@./4.a
 	@./5.a
-#	@./6.a
+	@./6.a
 	@./7.a
 	@./8.a
 	@./9.a
