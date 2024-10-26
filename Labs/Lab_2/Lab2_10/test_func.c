@@ -24,7 +24,7 @@ Suite *polynomial_suite(void) {
     Suite *s;
     TCase *tc_core;
 
-    s = suite_create("Polynomial");
+    s = suite_create("Polynomial (task 10)");
 
     tc_core = tcase_create("Core");
 

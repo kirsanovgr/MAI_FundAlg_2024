@@ -1,30 +1,37 @@
-#include "main.h"
+#include <stdio.h>
+#include "func.h"
 
 int main() {
-    int res, res0, res1, res2;
-    char temp[100];
+    printf("Testing overfscanf:\n");
 
-//    unroman("MMMCMXCIX", &res);
+    FILE *file = fopen("input.txt", "r");
+    if (file == NULL) {
+        printf("Error: Could not open file\n");
+        return ERROR_WITH_FILE;
+    }
 
-//    zecken(&res, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1);
-//    printf("%d", res);
+    int roman, base, zeckendorf;
+    overfscanf(file, "%Ro", &roman);
+    printf("Roman number: %d\n", roman);
 
-    FILE* a = fopen("a", "r");
-//
+    overfscanf(file, "%Zg", &zeckendorf);
+    printf("Zeckendorf number: %d\n", zeckendorf);
 
-//    scanf("  %d%d w%d", &res0, &res, &res1, temp);
-//    overfscanf(a, "asd%Cv %Zr\n%s %Ro", &res0, 2, &res, temp, &res1);
-//    oversscanf("   asdXIXasdfa", "asd%Ro", &res0, 2, &res, temp, &res1);
-//    int mnn;
-//    scanf("%*d", &mnn);
-    int err = oversscanf("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "%CV", &res0, 36);
-    if (err)
-        return err;
-//    fscanf(stdin, "   %d   %d %s", &res, &res1, temp);
-//    unzeckendorf(&res, a);
-//    printf("%d\n", fgetc(a));
-    printf("%d %d %s %d %d", res, res0, temp, res2, res1);
-//    printf("%d", mnn);
+    overfscanf(file, "%Cv", &base, 8);
+    printf("Base number: %d\n", base);
 
-    return 0;
+    fclose(file);
+
+    printf("\nTesting oversscanf:\n");
+
+    oversscanf("XIII", "%Ro", &roman);
+    printf("Roman number: %d\n", roman);
+
+    oversscanf("100101", "%Zg", &zeckendorf);
+    printf("Zeckendorf number: %d\n", zeckendorf);
+
+    oversscanf("12345", "%Cv", &base, 8);
+    printf("Base number: %d\n", base);
+
+    return SUCCESS;
 }
