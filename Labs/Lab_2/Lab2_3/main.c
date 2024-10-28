@@ -1,7 +1,7 @@
 #include "func.h"
 
 int main() {
-    char substring[256];
+    char substring[MAX_SUBSTRING_LENGTH];
     int file_count;
 
     printf("Введите подстроку для поиска: ");

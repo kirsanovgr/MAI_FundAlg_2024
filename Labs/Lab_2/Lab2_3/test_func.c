@@ -35,6 +35,13 @@ START_TEST(test_process_newline_in_substring) {
     ck_assert_str_eq(test_substr, "Hello\nWorld");
 }
 
+START_TEST(test_file_handler) {
+ //   char *key = "as\nas";
+    char *key = "as\nas";
+    int result = File_Handler(key, len(key), "test.txt");
+    ck_assert_int_eq(result, SUCCESS);
+}
+
 Suite* create_suite(void) {
     Suite* s;
     TCase* tc_core;
@@ -47,6 +54,7 @@ Suite* create_suite(void) {
     tcase_add_test(tc_core, test_substr);
     tcase_add_test(tc_core, test_line_counter);
     tcase_add_test(tc_core, test_process_newline_in_substring);
+    tcase_add_test(tc_core, test_file_handler);
     suite_add_tcase(s, tc_core);
 
     return s;

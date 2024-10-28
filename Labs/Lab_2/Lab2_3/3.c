@@ -84,22 +84,50 @@ int File_Handler(char *key, int m, char *filename) {
     int size = ftell(stream);
     fseek(stream, 0, SEEK_SET);
 
-    char content[size + 1]; // +1 для нуль-терминатора
+    char *content = malloc(size + 1); // +1 для нуль-терминатора
+    if (content == NULL) {
+        fclose(stream);
+        return FILE_ERROR; // Обработка ошибки выделения памяти
+    }
     fread(content, sizeof(char), size, stream);
     content[size] = '\0'; // Добавляем нуль-терминатор
 
     int i = 0, ind = 0;
+    int *found_positions = malloc(size * sizeof(int)); // Для хранения найденных позиций
+    if (found_positions == NULL) {
+        free(content);
+        fclose(stream);
+        return FILE_ERROR; // Обработка ошибки выделения памяти
+    }
+    int found_count = 0;
 
     while (1) {
         i = Substr(content + ind, size - ind, key, m);
         if (i == FILE_ERROR) break;
+
+        // Проверка на уникальность найденной позиции
+        int unique = 1;
+        for (int j = 0; j < found_count; j++) {
+            if (found_positions[j] == ind + i) {
+                unique = 0; // Повторное вхождение
+                break;
+            }
+        }
+
+        if (unique) {
+            found_positions[found_count++] = ind + i; // Сохраняем позицию
+            printf("Найдено вхождение в файле %s, строка %d, символ %d\n", filename, Line_Counter(content, ind + i), Pos_In_Line(content, ind + i));
+        }
+        
         ind += i + 1;
-        printf("Найдено вхождение в файле %s, строка %d, символ %d\n", filename, Line_Counter(content, ind), Pos_In_Line(content, ind));
     }
 
+    free(found_positions);
+    free(content);
     fclose(stream);
     return SUCCESS;
 }
+
 
 void Process_Newline_In_Substring(char *substr) {
     int i = 0;
