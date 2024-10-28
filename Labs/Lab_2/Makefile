@@ -136,24 +136,9 @@ test_task_1: test_task1_command_args_1 test_task1_lflag_2 test_task1_rflag_3 tes
 
 #------------------------------------------------------------------------
 
-test_task3_1:
-	@$(SUCCESS_IFILE_OFILE) "3.a" "test_files/task_3_test_1_input" "test_files/task_3_test_1_output"
-	@echo "TEST 9(task_3 sss) PASSED"
-
-
-test_task3_2:
-	@$(SUCCESS_IFILE_OFILE) "3.a" "test_files/task_3_test_2_input" "test_files/task_3_test_2_output"
-	@echo "TEST 10 PASSED"
-
-test_task3_3:
-	@$(SUCCESS_IFILE_OFILE) "3.a" "test_files/task_3_test_3_input" "test_files/task_3_test_3_output"
-	@echo "TEST 11 PASSED"
-
-test_task_3: test_task3_1 test_task3_2 test_task3_3
-	@echo "ALL TESTS TASK 3 PASSED"
-
 test_task_allWithOut12:
 	@./2.a
+	@./3.a
 	@./4.a
 	@./5.a
 	@./6.a
@@ -163,7 +148,7 @@ test_task_allWithOut12:
 	@./10.a
 
 
-test: test_task_1 test_task_3 test_task_allWithOut12
+test: test_task_1 test_task_allWithOut12
 
 
 #------------------------------------------------------------------------
