@@ -1,0 +1,348 @@
+#include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
+
+// Парсинг входных данных
+int chrtoint(char x, int* num);
+int parse_ldouble(char* str, long double* res);
+
+// Типы указателей на функции для работы с различными вычислительными методами.
+typedef long double (*limit_f)(int);
+typedef long double (*series_f)(long double, int);
+typedef long double (*equation_f)(long double);
+
+// Функции для вычисления пределов и рядов
+long double compute_limit(long double eps, limit_f f);
+long double compute_series(long double eps, series_f f, int multiplier, int n);
+int dichotomy_method(long double eps, equation_f f, long double a, long double b, long double* res);
+long double nm_pi(long double x);
+long double deriv_pi(long double x);
+long double newton_method(long double (*func)(long double), long double (*deriv)(long double), long double x0, long double epsilon);
+long double compute_limit_sqrt2(long double eps);
+long double compute_series_sqrt2(long double eps);
+long double compute_limit_pi(long double eps);
+
+// Специфические функции для различных констант
+long double limit_e(int n);
+long double series_e(long double prev, int n);
+long double equation_e(long double x);
+
+long double series_pi(long double prev, int n);
+long double equation_pi(long double x);
+
+long double limit_ln2(int n);
+long double series_ln2(long double prev, int n);
+long double equation_ln2(long double x);
+
+long double limit_sqrt2(long double prev, int n);
+long double series_sqrt2(int n);
+long double equation_sqrt2(long double x);
+
+// Перечисление для кодов статусов ошибок
+typedef enum {
+    SUCCESS = 0,
+    ERR_OUT_OF_BOUNDS = 1,
+    ERR_INCORRECT_ARGUMENTS = 2,
+} status;
+
+
+int chrtoint(char x, int* num) {
+    int a = x - '0';
+    if (a < 0 || a > 9) {
+        return ERR_OUT_OF_BOUNDS;
+    }
+    *num = a;
+    return 0;
+}
+
+int parse_ldouble(char* str, long double* res) {
+    long double real_part = 0;
+    int i = 0;
+    int int_part = 0;
+    int point = 0;
+    int sign = 1;
+    int multiplier = 1;
+
+    if (str[0] == '-') {
+        i++, sign = -1;
+    }
+
+    while (str[i] != '\0') {
+        if (str[i] == '.') {
+            if (point) {
+                return ERR_INCORRECT_ARGUMENTS;
+            }
+            point = i;
+            i++;
+            continue;
+        }
+        int number;
+        int err = chrtoint(str[i], &number);
+        if (err) {
+            return err;
+        }
+        if (point) {
+            real_part += (long double)number / (multiplier *= 10);
+        }
+        else {
+            int_part *= 10;
+            int_part += number;
+        }
+        i++;
+    }
+    *res = sign * (int_part + real_part);
+    return 0;
+}
+
+
+// Функция для вычисления предела с заданной точностью eps
+long double compute_limit(long double eps, limit_f f) {
+    int n = 1;
+    long double delta = +INFINITY;
+    long double res = f(n);
+    long double prev;
+
+    // Пока разница между текущим и предыдущим результатом больше заданной точности
+    while (delta > eps) {
+        prev = res;
+        n *= 2;
+        res = f(n);
+        delta = fabsl(prev - res);
+    }
+    return res;
+}
+
+// Функция для вычисления суммы ряда с заданной точностью eps
+long double compute_series(long double eps, series_f f, int multiplier, int n) {
+    long double sum = 0;
+    long double prev_sum;
+    long double cur_val = f(1, n);
+    long double delta = +INFINITY;
+
+    // Пока разница между текущей и предыдущей суммой больше заданной точности
+    while (delta > eps) {
+        prev_sum = sum;
+        cur_val = f(cur_val, n++);
+        sum += cur_val;
+        delta = fabsl(prev_sum - sum);
+    }
+    return multiplier * sum;
+}
+
+// Метод дихотомии для решения уравнений
+// - a: левая граница
+// - b: правая граница
+int dichotomy_method(long double eps, equation_f f, long double a, long double b, long double* res) {
+    if (f(a) * f(b) >= 0) {
+        return ERR_INCORRECT_ARGUMENTS;
+    }
+
+    long double delta = +INFINITY;
+    long double mid = 0;
+
+    // Пока не достигнута требуемая точность
+    while (fabsl(delta) > eps) {
+        mid = (a + b) / 2;
+        delta = f(mid);
+        if (delta * f(a) < 0) {
+            b = mid;
+        }
+        else {
+            a = mid;
+        }
+    }
+    *res = mid;
+    return 0;
+}
+
+long double nm_pi(long double x) {
+    return cos(x) + 1;
+}
+// производная
+long double deriv_pi(long double x) {
+    return -sin(x);
+}
+
+// метод Ньютона
+long double newton_method(long double (*func)(long double), long double (*deriv)(long double), long double x0, long double epsilon) {
+    double x = x0;
+    for (int i = 0; ; i++) {
+        double x_new = x - func(x) / deriv(x);
+        if (fabs(x_new - x) < epsilon) {
+            return x_new;
+        }
+        x = x_new;
+    }
+}
+
+
+// Функция для вычисления предела числа sqrt(2) с заданной точностью eps
+long double compute_limit_sqrt2(long double eps) {
+    int n = 1;
+    long double delta = +INFINITY;
+    long double res = 0;
+    long double prev;
+    while (delta > eps) {
+        prev = res;
+        res = limit_sqrt2(prev, n++);
+        delta = fabsl(prev - res);
+    }
+    return res;
+}
+
+// Функция для вычисления суммы ряда, приближающего sqrt(2) с заданной точностью eps
+long double compute_series_sqrt2(long double eps) {
+    int n = 1;
+    long double prod = 1;
+    long double prev_prod;
+    long double cur_val;
+    long double delta = +INFINITY;
+    while (delta > eps) {
+        prev_prod = prod;
+        cur_val = series_sqrt2(++n);
+        prod *= cur_val;
+        delta = fabsl(prev_prod - prod);
+    }
+    return prod;
+}
+
+// Функция для вычисления предела числа π с заданной точностью eps
+long double compute_limit_pi(long double eps) {
+    int n = 2;
+    long double prev_val;
+    long double cur_val = 4; // значение предела пи при n = 2
+    long double delta = +INFINITY;
+    while (delta > eps) {
+        prev_val = cur_val;
+        cur_val *= (4.0 * n * (n - 1)) / powl(2 * n - 1, 2.0); //вывод через предыдущий
+        delta = fabsl(cur_val - prev_val);
+        n++;
+    }
+    return cur_val;
+}
+
+// Специфическая функция для вычисления предела числа e
+long double limit_e(int n) {
+    return pow(1 + 1.0 / n, (double)n);
+}
+
+
+// Функция для вычисления значения ряда, приближающего число e
+long double series_e(long double prev, int n) {
+    if (n == 0) {
+        return prev;
+    }
+    return prev / n; //вывод через предыдущий
+}
+
+// Функция для уравнения e
+long double equation_e(long double x) {
+    return logl(x) - 1;
+}
+
+
+// Функция для вычисления значения ряда, приближающего число π
+long double series_pi(long double prev, int n) {
+    if (n == 1) {
+        return 1; // Первый член
+    }
+    // Вычисляем новый член через предыдущий
+    return prev * ((2.0 / (2.0 * n - 1.0)) - 1.0);
+}
+
+
+// Функция для уравнения π
+long double equation_pi(long double x) {
+    return cosl(x) + 1;
+}
+
+// Функция для вычисления предела ln(2)
+long double limit_ln2(int n) {
+    return n * (pow(2, 1.0 / n) - 1); //вывод через предыдущий
+}
+
+// Функция для вычисления значения ряда, приближающего ln(2)
+long double series_ln2(long double prev, int n) {
+    if (n == 1) {
+        return 1;
+    }
+    return prev * ((1.0 - n) / n);
+}
+
+// Функция для уравнения ln(2)
+long double equation_ln2(long double x) {
+    return expl(x) - 2;
+}
+
+// Функция для вычисления предела sqrt(2)
+long double limit_sqrt2(long double prev, int n) {
+    return prev - (prev * prev) / 2.0 + 1; //вывод через предыдущий
+}
+
+// Функция для вычисления значения ряда, приближающего sqrt(2)
+long double series_sqrt2(int n) {
+    if (n < 2) {
+        return ERR_OUT_OF_BOUNDS;
+    }
+    return exp2l(exp2l(-n));
+}
+
+// Функция для уравнения sqrt(2)
+long double equation_sqrt2(long double x) {
+    return x * x - 2;
+}
+
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        printf("Usage: %s <epsilon>\n", argv[0]);
+        return ERR_INCORRECT_ARGUMENTS;
+    }
+
+    long double eps;
+    int parse_err = parse_ldouble(argv[1], &eps);
+    if (parse_err != SUCCESS || eps <= 0) {
+        printf("Epsilon must be positive.\n");
+        return ERR_INCORRECT_ARGUMENTS;
+    }
+
+    // Расчет числа e с помощью различных методов
+    printf("e Calculation:\n");
+    printf("Limit of e: %.16Lf | ", compute_limit(eps, &limit_e));
+    printf("Series of e: %.16Lf | ", compute_series(eps, &series_e, 1, 0));
+
+    long double eq_res;
+    if (dichotomy_method(eps, &equation_e, 0.5, 3.0, &eq_res) == SUCCESS) {
+        printf("Equation of e: %.16Lf\n", eq_res);
+    }
+    else {
+        printf("Error solving equation of e.\n");
+    }
+
+    // Расчет ln2 с помощью различных методов
+    printf("ln2 Calculation:\n");
+    printf("Limit of ln2: %.16Lf | ", compute_limit(eps, &limit_ln2));
+    printf("Series of ln2: %.16Lf | ", compute_series(eps, &series_ln2, 1, 1));
+    if (dichotomy_method(eps, &equation_ln2, 0.0, 1.0, &eq_res) == SUCCESS) {
+        printf("Equation of ln2: %.16Lf\n", eq_res);
+    }
+    else {
+        printf("Error solving equation of ln2.\n");
+    }
+
+    // Расчет числа pi с помощью различных методов
+    printf("pi Calculation:\n");
+    printf("Limit of pi: %.16Lf | ", compute_limit_pi(eps));
+    printf("Series of pi: %.16Lf | ", compute_series(eps, &series_pi, 4, 1));
+    printf("Equation of pi: %.16Lf \n", newton_method(nm_pi, deriv_pi, 3, eps));
+    // Расчет sqrt2 с помощью различных методов
+    printf("sqrt2 Calculation:\n"); 
+    printf("Limit of sqrt2: %.16Lf | ", compute_limit_sqrt2(eps));
+    printf("Series of sqrt2: %.16Lf | ", compute_series_sqrt2(eps));
+    if (dichotomy_method(eps, &equation_sqrt2, 1.0, 2.0, &eq_res) == SUCCESS) {
+        printf("Equation of sqrt2: %.16Lf\n", eq_res);
+    }
+    else {
+        printf("Error solving equation of sqrt2.\n");
+    }
+    return SUCCESS;
+}
