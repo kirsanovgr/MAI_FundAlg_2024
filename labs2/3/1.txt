@@ -1,3 +1,0 @@
-This is a test file.
-The test is successful.
-Let's test this again.

@@ -1,3 +1,0 @@
-Test file without the word.
-Testing one two three.
-No matches here.
