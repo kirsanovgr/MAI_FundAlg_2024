@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <string.h>
+
+typedef enum {
+    SUCCESS = 0,
+    ERR_OVERFLOW = 2,
+    ERR_MEM = 3,
+    ERR_BASE = 4
+} status;
+
+unsigned int decrement(unsigned int num);
+unsigned int increment(unsigned int num);
+status convert_to_base(unsigned long long num, unsigned int r, char **result);
+
+unsigned int decrement(unsigned int num) {  //00000100 /4
+    unsigned int mask = 1;                //  00000001
+    while ((num & mask) == 0) {
+        num = num ^ mask;           //        00000101 / 00000111
+        mask <<= 1;  //                       00000010 / 00000100
+    }
+    return num ^ mask;     //00000011 /3
+}
+
+unsigned int increment(unsigned int num) { //00000100
+    unsigned int mask = 1;               //  00000001
+    while (num & mask) {
+        num = num ^ mask;
+        mask <<= 1;
+    }
+    return num ^ mask;           // 00000101
+}
+
+
+status convert_to_base(unsigned long long num, unsigned int r, char **result) {
+    if (num == 0) {
+        *result = malloc(sizeof(char) << 1);
+        if (*result == NULL) {
+            printf("Malloc error occured!\n");
+            return ERR_MEM;
+        }
+
+        (*result)[0] = '0';
+        (*result)[1] = '\0';
+        return SUCCESS;
+    }
+
+    if (num > UINT_MAX) {
+        printf("Overflow error: number is too large.\n");
+        return ERR_OVERFLOW;
+    }
+    if (r > 5 || r < 1) {
+        printf("Base is 2^r and r must be in natural int from 1 to 5\n");
+        return ERR_BASE;
+    }
+
+    unsigned int base = 1 << r;
+    unsigned int mask = decrement(base);
+
+    unsigned int size = sizeof(char) << 8;
+    char *out = (char*)malloc(size);
+    if (out == NULL) {
+        printf("Malloc error occured!\n");
+        return ERR_MEM;
+    }
+
+    unsigned int index = 0;
+    const char chars[] = "0123456789abcdefghijklmnopqrstuv";
+
+    while (num > 0) {
+        unsigned int current_bits = num & mask;
+        out[index] = chars[current_bits];
+        index = increment(index);
+        num >>= r;
+    }
+
+    unsigned int left = 0;
+    unsigned int right = decrement(index);
+    while (left < right) {
+        char temp = out[left];
+        out[left] = out[right];
+        out[right] = temp;
+        left = increment(left);
+        right = decrement(right);
+    }
+
+    out[index] = '\0';
+
+    *result = out;
+
+    return SUCCESS;
+}
+
+int main() {
+    char* res;
+    status err = convert_to_base(10, 3, &res);
+    if (err == SUCCESS) {
+        printf("%s", res);
+        return err;
+    }
+    return err;
+}
