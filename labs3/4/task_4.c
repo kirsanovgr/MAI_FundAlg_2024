@@ -75,7 +75,7 @@ typedef struct {
 } Post;
 
 int addMailToPost(Post* post, Mail mail) {
-    Mail* temp = realloc(post->mails, (post->mailCount + 1) * sizeof(Mail));
+    Mail* temp = (Mail*)realloc(post->mails, (post->mailCount + 1) * sizeof(Mail));
     if (!temp) {
         printf("Memory allocation failed!\n");
         return -1;

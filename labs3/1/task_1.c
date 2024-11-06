@@ -11,7 +11,7 @@ typedef enum {
 
 int add(int x, int y) {
     int sum, carry;
-    while (y != 0) {
+    while (y) {
         sum = x ^ y;
         carry = (x & y) << 1;
         x = sum;
@@ -35,11 +35,12 @@ void reverseString(char *str) {
     while (str[length] != '\0') {
         length = add(length, 1);
     }
-
-    for (i = 0; i < length / 2; ++i) {
+    int halfLength = length >> 1;
+     for (i = 0; i < halfLength; ++i) {
         tmp = str[i];
         str[i] = str[length - 1 - i];
         str[length - 1 - i] = tmp;
+        i = add(i, 1);
     }
 }
 

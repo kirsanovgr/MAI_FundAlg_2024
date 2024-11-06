@@ -52,21 +52,28 @@ StatusCode findLongestVectors(int n, Vector* vectors, int vectorCount, double (*
     for (int i = 0; i < vectorCount; i++) {
         double length = normFunc(&vectors[i]);
         if (length > maxLength) {
-            maxLength = length;
-            *longestCount = 1;
+        maxLength = length;
+        *longestCount = 1;
+        if (*longestVectors == NULL) {
+            *longestVectors = malloc(sizeof(Vector*) * (*longestCount));
+            if (*longestVectors == NULL) {
+                return ERROR_MEMORY_ALLOCATION_FAILED;
+            }
+        } else {
             *longestVectors = realloc(*longestVectors, sizeof(Vector*) * (*longestCount));
             if (*longestVectors == NULL) {
                 return ERROR_MEMORY_ALLOCATION_FAILED;
             }
-            (*longestVectors)[0] = &vectors[i];
-        } else if (length == maxLength) {
-            (*longestCount)++;
-            *longestVectors = realloc(*longestVectors, sizeof(Vector*) * (*longestCount));
-            if (*longestVectors == NULL) {
-                return ERROR_MEMORY_ALLOCATION_FAILED;
-            }
-            (*longestVectors)[*longestCount - 1] = &vectors[i];
         }
+        (*longestVectors)[0] = &vectors[i];
+    } else if (length == maxLength) {
+        (*longestCount)++;
+        *longestVectors = realloc(*longestVectors, sizeof(Vector*) * (*longestCount));
+        if (*longestVectors == NULL) {
+            return ERROR_MEMORY_ALLOCATION_FAILED;
+        }
+        (*longestVectors)[*longestCount - 1] = &vectors[i];
+    }
     }
     return SUCCESS;
 }

@@ -61,6 +61,11 @@ int main(int argc, char* argv[]) {
         return ERROR_INVALID_ARGUMENTS;
     }
 
+    if (strlen(argv[2]) != 2) {
+        printf("Invalid flag length. Flag must be of length 2, ['-a'] / ['/a'] or ['-d'] / ['/d'].\n");
+        return ERROR_INVALID_FLAG;
+    }
+
     int ascending;
     if (strcmp(argv[2], "-a") == 0 || strcmp(argv[2], "/a") == 0) {
         ascending = 1;
@@ -80,6 +85,10 @@ int main(int argc, char* argv[]) {
         Employee* temp = (Employee*)realloc(employees, (employeeCount + 1) * sizeof(Employee));
         if (!temp) {
             perror("Memory allocation failed");
+            for (int i = 0; i < employeeCount; i++) {
+                free(employees[i].name);
+                free(employees[i].surname);
+            }
             free(employees);
             fclose(input_file);
             return ERROR_MEMORY_ALLOCATION_FAILED;
@@ -87,9 +96,13 @@ int main(int argc, char* argv[]) {
         employees = temp;
 
         employees[employeeCount].id = id;
-        employees[employeeCount].name = malloc(strlen(bufName) + 1);
+        employees[employeeCount].name = (char*)malloc(strlen(bufName) + 1);
         if (!employees[employeeCount].name) {
             perror("Memory allocation failed for name");
+            for (int i = 0; i < employeeCount; i++) {
+                free(employees[i].name);
+                free(employees[i].surname);
+            }
             free(employees);
             fclose(input_file);
             return ERROR_MEMORY_ALLOCATION_FAILED;
@@ -99,6 +112,11 @@ int main(int argc, char* argv[]) {
         employees[employeeCount].surname = malloc(strlen(bufSurname) + 1);
         if (!employees[employeeCount].surname) {
             perror("Memory allocation failed for surname");
+            free(employees[employeeCount].name);
+            for (int i = 0; i < employeeCount; i++) {
+                free(employees[i].name);
+                free(employees[i].surname);
+            }
             free(employees);
             fclose(input_file);
             return ERROR_MEMORY_ALLOCATION_FAILED;
@@ -114,6 +132,10 @@ int main(int argc, char* argv[]) {
 
     if (!(output_file = fopen(argv[3], "w"))) {
         perror("Output file cannot be opened");
+        for (int i = 0; i < employeeCount; i++) {
+            free(employees[i].name);
+            free(employees[i].surname);
+        }
         free(employees);
         return ERROR_FILE_OPEN_FAILED;
     }
