@@ -1,39 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "func.h"
 
-#define MAX_NAME_LEN 100
-#define MAX_DATE_LEN 11  // Формат: dd.mm.yyyy
-
-typedef struct Liver {
-    char surname[MAX_NAME_LEN];
-    char name[MAX_NAME_LEN];
-    char patronymic[MAX_NAME_LEN];
-    char birth_date[MAX_DATE_LEN]; // в формате "dd.mm.yyyy"
-    char gender;  // 'M' или 'W'
-    double income;
-    struct Liver* next;
-} Liver;
-
-// Структура для хранения истории изменений (Undo)
-typedef struct History {
-    char action;  // 'A' - добавление, 'D' - удаление, 'M' - изменение
-    Liver* liver; // Структура данных жителя, который был изменен
-    struct History* next;
-} History;
-
-// Функция для сравнения дат рождения
-int compare_birth_dates(const char* date1, const char* date2) {
-    int day1, month1, year1, day2, month2, year2;
-    sscanf(date1, "%d.%d.%d", &day1, &month1, &year1);
-    sscanf(date2, "%d.%d.%d", &day2, &month2, &year2);
-
-    if (year1 != year2) return year1 - year2;
-    if (month1 != month2) return month1 - month2;
-    return day1 - day2;
-}
-
-// Функция для вставки в упорядоченный список
+// для вставки в упорядоченный список
 void insert_sorted(Liver** head, Liver* new_liver) {
     if (*head == NULL || compare_birth_dates(new_liver->birth_date, (*head)->birth_date) < 0) {
         new_liver->next = *head;
@@ -50,10 +17,12 @@ void insert_sorted(Liver** head, Liver* new_liver) {
     current->next = new_liver;
 }
 
-// Функция для добавления в историю
+// для добавления в историю
 void add_to_history(History** history, char action, Liver* liver) {
     History* new_history = (History*)malloc(sizeof(History));
-    if (!new_history) return; // Ошибка выделения памяти
+    if (!new_history) {
+        return;
+    }
 
     new_history->action = action;
     new_history->liver = liver;
@@ -61,11 +30,9 @@ void add_to_history(History** history, char action, Liver* liver) {
     *history = new_history;
 }
 
-// Функция для отмены последнего действия
-// Функция для отмены последнего действия
 int undo(History** history, Liver** head) {
     if (*history == NULL) {
-        return -1; // История пуста
+        return NOT_HISTORY; // История пуста
     }
 
     History* last_action = *history;
@@ -91,9 +58,6 @@ int undo(History** history, Liver** head) {
         // Отменяем удаление, добавляем назад
         insert_sorted(head, last_action->liver);
     } else if (last_action->action == 'M') {
-        // Отменяем изменение, возвращаем старые данные
-        // Восстановим данные из прошлого состояния
-        // Возвращаем старые значения
         char temp_name[MAX_NAME_LEN];
         strncpy(temp_name, last_action->liver->name, MAX_NAME_LEN);
         strncpy(last_action->liver->name, last_action->liver->patronymic, MAX_NAME_LEN); // Восстановить прежние данные
@@ -101,15 +65,14 @@ int undo(History** history, Liver** head) {
     }
 
     free(last_action);
-    return 0;
+    return SUCCESS;
 }
 
 
-// Функция для чтения данных из файла// Чтение данных из файла
 int read_from_file(const char* filename, Liver** head) {
     FILE* file = fopen(filename, "r");
     if (!file) {
-        return -1; // Ошибка открытия файла
+        return ERROR_FILE; // Ошибка открытия файла
     }
 
     char buffer[256];
@@ -118,7 +81,7 @@ int read_from_file(const char* filename, Liver** head) {
         Liver* new_liver = (Liver*)malloc(sizeof(Liver));
         if (!new_liver) {
             fclose(file);
-            return -2; // Ошибка выделения памяти
+            return ERROR_MEMORY; // Ошибка выделения памяти
         }
 
         // Проверим формат и корректность данных
@@ -133,18 +96,16 @@ int read_from_file(const char* filename, Liver** head) {
     }
 
     fclose(file);
-    return 0;
+    return SUCCESS;
 }
 
 
-// Функция для добавления жителя в список
 int add_liver(Liver** head, Liver* new_liver, History** history) {
     insert_sorted(head, new_liver);
     add_to_history(history, 'A', new_liver);
-    return 0;
+    return SUCCESS;
 }
 
-// Функция для удаления жителя из списка
 int delete_liver(Liver** head, const char* surname, History** history) {
     Liver* current = *head;
     Liver* prev = NULL;
@@ -158,16 +119,14 @@ int delete_liver(Liver** head, const char* surname, History** history) {
             }
             add_to_history(history, 'D', current); // Добавляем в историю удаления
             free(current);
-            return 0;
+            return SUCCESS;
         }
         prev = current;
         current = current->next;
     }
-    return -1; // Житель не найден
+    return NOT_HUMAN;
 }
 
-// Функция для модификации данных жителя
-// Функция для модификации данных жителя
 int modify_liver(Liver* head, const char* surname, const char* new_name, double new_income, History** history) {
     Liver* current = head;
     while (current) {
@@ -177,15 +136,14 @@ int modify_liver(Liver* head, const char* surname, const char* new_name, double 
             printf("Изменение данных для %s\n", current->surname); // Отладочная информация
             strncpy(current->name, new_name, MAX_NAME_LEN);
             current->income = new_income;
-            return 0;
+            return SUCCESS;
         }
         current = current->next;
     }
-    return -1; // Житель не найден
+    return NOT_HUMAN; // Житель не найден
 }
 
 
-// Функция для сохранения данных в файл
 int save_to_file(const char* filename, Liver* head) {
     char save_filename[100];
     printf("Введите путь к файлу для сохранения данных: ");
@@ -193,7 +151,7 @@ int save_to_file(const char* filename, Liver* head) {
 
     FILE* file = fopen(filename, "w");
     if (!file) {
-        return -1;
+        return ERROR_FILE;
     }
 
     Liver* current = head;
@@ -204,7 +162,7 @@ int save_to_file(const char* filename, Liver* head) {
     }
 
     fclose(file);
-    return 0;
+    return SUCCESS;
 }
 
 // Функция для отображения данных всех жителей
@@ -224,13 +182,11 @@ int main() {
 
     const char* filename = "residents.txt";
 
-    // Чтение данных из файла
     if (read_from_file(filename, &residents) != 0) {
         printf("Ошибка при чтении файла.\n");
-        return 1;
+        return ERROR_FILE;
     }
 
-    // Главный цикл программы
     int choice;
     do {
         printf("\nМеню:\n");
@@ -244,7 +200,7 @@ int main() {
         printf("Выберите действие: ");
         scanf("%d", &choice);
 
-        if (choice == 1) {
+        if (choice == ADDING_RESIDENT) {
             // Добавление нового жителя
             Liver* new_liver = (Liver*)malloc(sizeof(Liver));
             if (!new_liver) {
@@ -267,7 +223,7 @@ int main() {
 
             add_liver(&residents, new_liver, &history);
             printf("Житель добавлен.\n");
-        } else if (choice == 2) {
+        } else if (choice == REMOVE_RESIDENT) {
             // Удаление жителя
             char surname[MAX_NAME_LEN];
             printf("Введите фамилию жителя для удаления: ");
@@ -277,7 +233,7 @@ int main() {
             } else {
                 printf("Житель удалён.\n");
             }
-        } else if (choice == 3) {
+        } else if (choice == CHANGE_DATA) {
             // Изменение данных жителя
             char surname[MAX_NAME_LEN], new_name[MAX_NAME_LEN];
             double new_income;
@@ -293,17 +249,17 @@ int main() {
             } else {
                 printf("Данные изменены.\n");
             }
-        } else if (choice == 4) {
+        } else if (choice == SHOW_ALL) {
             // Показать всех жителей
             print_residents(residents);
-        } else if (choice == 5) {
+        } else if (choice == UNDO) {
             // Отмена последнего действия
             if (undo(&history, &residents) == 0) {
                 printf("Последнее изменение отменено.\n");
             } else {
                 printf("Невозможно отменить изменение.\n");
             }
-        } else if (choice == 6) {
+        } else if (choice == SAVE_TO_FILE) {
             // Сохранение в файл
             if (save_to_file(filename, residents) == 0) {
                 printf("Данные успешно сохранены в файл.\n");
@@ -311,7 +267,7 @@ int main() {
                 printf("Ошибка при сохранении файла.\n");
             }
         }
-    } while (choice != 7);
+    } while (choice != END);
 
-    return 0;
+    return SUCCESS;
 }
