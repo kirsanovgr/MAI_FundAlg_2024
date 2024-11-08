@@ -115,7 +115,7 @@ int find_depth(Dictionary *dict, const char **MSG) {
 	if (errorMsg) {
 		return errorMsg;
 	}
-	printf("Max depth: %d\n", d);
+	printf("%s%d\n", MSG[7], d);
 	return 0;
 }
 
@@ -205,7 +205,8 @@ int main(int argc, char **argv) {
 	                     "Write word: ",
 	                     "Write n: ",
 	                     "If you need help, write help\n\n",
-	                     "Incorrect data\n"};
+	                     "Incorrect data\n",
+	                     "Max depth: "};
 	const char *COMMANDS[] = {"help\n",         "print all words\n",       "find word\n",
 	                          "find n words\n", "find the longest word\n", "find the smallest word\n",
 	                          "find depth\n",   "download tree\n",         "load tree\n"};

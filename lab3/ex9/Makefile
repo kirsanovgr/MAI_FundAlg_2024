@@ -6,5 +6,5 @@ COMP = gcc
 
 ex8: main.c
 	$(COMP) $(CFLAGS) main.c ex9.c -o ex9.a $(LIBS_FLAG)
-	#valgrind --leak-check=full --show-leak-kinds=all ./ex9.a test "," "." "1" ";" "(" ")" "[" "]"
+	#valgrind --leak-check=full --show-leak-kinds=all ./ex9.a test2 "," "." "1" ";" "(" ")" "[" "]"
 	#rm *a
