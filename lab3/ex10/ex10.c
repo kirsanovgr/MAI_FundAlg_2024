@@ -1,6 +1,4 @@
 #include "ex10.h"
-#define _GNU_SOURCE
-
 
 int checks_names_files(int argc, char **argv) {
 	if(argc != 3){
@@ -15,16 +13,17 @@ int checks_names_files(int argc, char **argv) {
 	realpath(argv[2], realnames[1]);
 
 	if (string_cmp(realnames[0], realnames[1])) {
-		free(realnames[0]);
-		free(realnames[1]);
+		for (int i = 0; i < 2; ++i) {
+			free(realnames[i]);
+		}
 		return INCORRECT_OPTIONS_ERROR;
 	}
 
-	free(realnames[0]);
-	free(realnames[1]);
+	for (int i = 0; i < 2; ++i) {
+		free(realnames[i]);
+	}
 	return SUCCESS;
 }
-
 
 error_msg to_linked_list(String *expression, NodeLL **linked_list_nodes) {
 	NodeLL *nodes = *linked_list_nodes;
@@ -210,7 +209,7 @@ error_msg create_node(Node **node, String *s) {
 	if (!tmp_node) {
 		return MEMORY_ALLOCATED_ERROR;
 	}
-	tmp_node->capacity_children = 5;
+	tmp_node->capacity_children = DEFAULT_COUNT_CHILD;
 	tmp_node->children = (Node **)calloc(tmp_node->capacity_children, sizeof(Node));
 	if (!tmp_node->children) {
 		free(tmp_node);
