@@ -210,7 +210,7 @@ error_msg renew_hash_table_with_new_size(const HashTable *dst, HashTable *src) {
 	return SUCCESS;
 }
 
-int calculate_new_size(int hash_count) { return (int)((double)hash_count * 2); }
+int calculate_new_size(int hash_count) { return (hash_count * 2); }
 
 int is_correct_def_name(String *s) {
 	for (int i = 0; i < s->size; ++i) {
