@@ -27,12 +27,13 @@ typedef struct HashTable {
 } HashTable;
 
 #define DEFAULT_HASH_TABLE_SIZE 128
+#define MAX_VALUE_HASH 100000
 
 #define max(a, b) (a > b) ? a : b
 #define min(a, b) (a < b) ? a : b
 
 // Функция хэширования
-unsigned long hash_62(String *string, const int hash_size);
+unsigned long hash_62(String *string);
 
 // Функции для двусвязного списка
 error_msg create_list(List **list);
@@ -45,7 +46,7 @@ void destroy_list(List *list);
 void destroy_list_node(ListNode *listNode);
 
 // Функции для хэш таблицы
-error_msg build_hash_table(FILE * stream, HashTable * hashTable, String * result);
+error_msg build_hash_table(FILE *stream, HashTable *hashTable, String *result);
 int calculate_new_size(int hash_count);
 error_msg create_hash_table(HashTable *hashTable, int hash_size);
 error_msg push_into_hash_table(HashTable *hash_table, String *def_name, String *value, int *max_size_list,

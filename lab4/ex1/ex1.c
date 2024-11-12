@@ -12,7 +12,7 @@ int seq_numbers(char c) {
 	}
 }
 
-unsigned long hash_62(String *string, const int hash_size) {
+unsigned long hash_62(String *string) {
 	unsigned long hash = 0;
 	int seq;
 	for (int i = 0; i < string->size; ++i) {
@@ -20,9 +20,9 @@ unsigned long hash_62(String *string, const int hash_size) {
 		if (seq == -1) {
 			return -1;
 		}
-		hash = hash % hash_size + seq;
+		hash = hash % MAX_VALUE_HASH + seq;
 	}
-	return hash % hash_size;
+	return hash % MAX_VALUE_HASH;
 }
 
 error_msg create_list(List **list) {
@@ -160,7 +160,7 @@ error_msg push_into_hash_table(HashTable *hash_table, String *def_name, String *
 
 	// Если не было до этого хэша
 	if (h == (unsigned long )hash_table->hash_size + 1) {
-		h = hash_62(def_name, hash_table->hash_size);
+		h = hash_62(def_name);
 	}
 	unsigned long index = h % hash_table->hash_size;
 	error_msg errorMsg;
@@ -239,7 +239,7 @@ error_msg check_all_def(String *res, String *tmp, HashTable *hashTable) {
 				destroy_string(&substring);
 				return errorMsg;
 			}
-			unsigned long h = hash_62(&substring, hashTable->hash_size) % hashTable->hash_size;
+			unsigned long h = hash_62(&substring) % hashTable->hash_size;
 			if (hashTable->data[h]) {
 				ListNode *moving = hashTable->data[h]->head;
 				for (int k = 0; k < hashTable->data[h]->size; ++k) {
@@ -424,14 +424,14 @@ error_msg read_instruction(FILE *stream, String *result) {
 			return errorMsg;
 		}
 	}
-//	errorMsg = push_end_string(result, '\n');
-//	if (errorMsg) {
-//		destroy_hash_table(&hashTable);
-//		destroy_string(&tmp);
-//		destroy_string(&value);
-//		destroy_string(&def_name);
-//		return errorMsg;
-//	}
+	//	errorMsg = push_end_string(result, '\n');
+	//	if (errorMsg) {
+	//		destroy_hash_table(&hashTable);
+	//		destroy_string(&tmp);
+	//		destroy_string(&value);
+	//		destroy_string(&def_name);
+	//		return errorMsg;
+	//	}
 
 	clear_string(&tmp);
 	while (1) {
