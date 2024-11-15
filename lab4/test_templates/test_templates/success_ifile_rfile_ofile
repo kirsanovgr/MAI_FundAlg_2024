@@ -1,0 +1,10 @@
+if [ $# -ne 5 ]
+then
+    echo "Incorrect test usage. Expected <exec file with args> <input file> <file with expected console output> <output file> <file with expected output data>"
+    exit 1
+fi
+
+
+"${BASH_SOURCE%/*}"/template_input_file_result_file_output_file "$1" "0" "$2" "$3" "$4" "$5"
+
+exit $?

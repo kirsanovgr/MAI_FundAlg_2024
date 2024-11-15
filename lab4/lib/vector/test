@@ -1,0 +1,60 @@
+Load A, in.txt;
+Load B, in2.txt;
+
+Rand C, 10, 1, 100;
+
+Concat A, B;
+
+Save A, out.txt;
+
+Remove A, 2, 5;
+
+Copy A, 4, 10, D;
+
+Sort A+;
+
+Sort D-;
+
+Shuffle C;
+
+Stats A;
+
+Print A, 3;
+
+Print A, 4, 16;
+
+Print A, all;
+
+Free A;
+
+Print A, all;
+
+Load E, in3.txt;
+
+Rand F, 5, 1, 50;
+
+Concat E, F;
+
+Save E, out2.txt;
+
+Remove E, 1, 3;
+
+Copy E, 2, 8, G;
+
+Sort E+;
+
+Sort G-;
+
+Shuffle F;
+
+Stats E;
+
+Print E, 2;
+
+Print E, 3, 15;
+
+Print E, all;
+
+Free E;
+
+Print E, all;

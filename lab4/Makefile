@@ -29,7 +29,7 @@ all:
 	cd lib/mstring/ && make
 	cd lib/vector/ && make
 	cd lib/SystemErrors/ && make
-	for dir in ex1; do \
+	for dir in ex1 ex2; do \
 		cd $$dir ;\
 		make ;\
 		mv $$dir.a ../$$dir.a ;\
@@ -39,6 +39,7 @@ all:
 
 clean: # Чтобы удалить все исполняемые файлы надо ввести команду make clean
 	rm -r -f *.a
+	rm -r -d ex2/out*.txt
 
 
 # Принцип формирования названия выполняемого теста:
@@ -106,8 +107,37 @@ task_1_test_2:
 
 task_1_test_3:
 	@$(SUCCESS_OFILE) "ex1.a test_files/task_1_test_3_input" "test_files/task_1_test_3_correct_output"
-	@echo "TEST 2 (def_name is substring words) PASSED"
+	@echo "TEST 3 (def_name is substring words) PASSED"
 
 test_task_1: task_1_test_1 task_1_test_2 task_1_test_3
 
-test: test_task_1
+task_2_test_1:
+	@$(FAILED_CMD) "ex2.a" 6 ""
+	@echo "TEST 4 (Incorrect count args) PASSED"
+
+task_2_test_2:
+	@$(SUCCESS_OFILE) "ex2.a test_files/task_2_input_file" "test_files/task_2_test_2_correct_output_stdout"
+	@echo "TEST 5(correct stdin) PASSED"
+
+task_2_test_3:
+	@$(SUCCESS_RFILE_OFILE) "ex2.a test_files/task_2_input_file" "test_files/task_2_test_2_correct_output_stdout" "test_files/out.txt" "test_files/task_2_test_2_correct_output_file1"
+	@echo "TEST 6(correct out.txt) PASSED"
+
+task_2_test_4:
+	@$(SUCCESS_RFILE_OFILE) "ex2.a test_files/task_2_input_file" "test_files/task_2_test_2_correct_output_stdout" "test_files/out1.txt" "test_files/task_2_test_3_correct_output_file2"
+	@echo "TEST 6(correct out1.txt) PASSED"
+
+task_2_test_5:
+	@$(SUCCESS_RFILE_OFILE) "ex2.a test_files/task_2_input_file" "test_files/task_2_test_2_correct_output_stdout" "test_files/out2.txt" "test_files/task_2_test_4_correct_output_file3"
+	@echo "TEST 7(correct out2.txt) PASSED"
+
+task_2_test_6 :
+	@$(SUCCESS_RFILE_OFILE) "ex2.a test_files/task_2_input_file" "test_files/task_2_test_2_correct_output_stdout" "test_files/out_c.txt" "test_files/task_2_test_5_correct_output_file4"
+	@echo "TEST 8(correct out_c.txt) PASSED"
+
+
+
+
+test_task_2: task_2_test_1 task_2_test_2 task_2_test_3 task_2_test_4 task_2_test_5  task_2_test_6
+
+test: test_task_1 test_task_2

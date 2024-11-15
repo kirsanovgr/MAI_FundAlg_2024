@@ -3,25 +3,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-IntVector* create_int_vector(int capacity) {
-	IntVector* vector = (IntVector*)malloc(sizeof(IntVector));
-	if (!vector) {
-		return NULL;
+error_msg create_int_vector(IntVector** vector, int capacity) {
+	*vector = (IntVector*)malloc(sizeof(IntVector));
+	if (!*vector) {
+		return MEMORY_ALLOCATED_ERROR;
 	}
-	vector->arr = (int*)malloc(sizeof(int) * capacity);
-	if (!(vector->arr)) {
-		return NULL;
+	(*vector)->arr = (int*)malloc(sizeof(int) * capacity);
+	if (!((*vector)->arr)) {
+		return MEMORY_ALLOCATED_ERROR;
 	}
-	vector->size = 0;
-	vector->capacity = capacity;
-	return vector;
+	(*vector)->size = 0;
+	(*vector)->capacity = capacity;
+	return SUCCESS;
 }
 
 int resize_int_vector(IntVector* vector, int new_capacity) {
-	vector->arr = (int*)realloc(vector->arr, sizeof(int) * new_capacity);
+	int* tmp = (int*)realloc(vector->arr, sizeof(int) * new_capacity);
 	if (!(vector->arr)) {
 		return MEMORY_ALLOCATED_ERROR;
 	}
+	vector->arr = tmp;
 	vector->capacity = new_capacity;
 	return SUCCESS;
 }
@@ -59,8 +60,86 @@ void destroy_int_vector(IntVector* vector) {
 	free(vector);
 }
 
-void print_intvector(FILE * stream, IntVector* vector, char * separator) {
+void print_intvector(FILE* stream, IntVector* vector, char* separator) {
 	for (int i = 0; i < vector->size; ++i) {
-		fprintf(stream, "%d%s", vector->arr[i], separator);
+		if (i != vector->size - 1) {
+			fprintf(stream, "%d%s", vector->arr[i], separator);
+		} else {
+			fprintf(stream, "%d", vector->arr[i]);
+		}
 	}
+}
+
+error_msg remove_int_vector(IntVector* vector, int index) {
+	if (index >= vector->size || index < 0) {
+		return INDEX_VECTOR_ERROR;
+	}
+	for (int i = index; i < vector->size - 1; ++i) {
+		vector->arr[i] = vector->arr[i + 1];
+	}
+	vector->size -= 1;
+	return SUCCESS;
+}
+
+int find_max(IntVector* vector) {
+	if (vector->size == 0) {
+		return -1;
+	}
+	int maxc = vector->arr[0];
+	int index_max = 0;
+	for (int i = 1; i < vector->size; ++i) {
+		if (vector->arr[i] > maxc) {
+			maxc = vector->arr[i];
+			index_max = i;
+		}
+	}
+	return index_max;
+}
+
+int find_min(IntVector* vector) {
+	if (vector->size == 0) {
+		return -1;
+	}
+	int minc = vector->arr[0];
+	int index_min = 0;
+	for (int i = 1; i < vector->size; ++i) {
+		if (vector->arr[i] < minc) {
+			minc = vector->arr[i];
+			index_min = i;
+		}
+	}
+	return index_min;
+}
+
+int find_most_frequent_value(IntVector * vector){
+	if(vector->size == 0){
+		return -1;
+	}
+	int max_count = 0;
+	int count;
+	int index_max_count =0;
+	for(int i = 0; i < vector->size; ++i){
+		count = 0;
+		for(int j = 0; j < vector->size; ++j){
+			if(vector->arr[i] == vector->arr[j]){
+				count++;
+			}
+		}
+		if(count >= max_count){
+			max_count = count;
+			index_max_count = i;
+		}
+	}
+	return index_max_count;
+}
+
+double find_average_value(IntVector * vector){
+	if(vector->size == 0){
+		return 0;
+	}
+	double average = 0;
+	for(int i = 0; i < vector->size; ++i){
+		average += vector->arr[i];
+	}
+	return average / vector->size;
 }

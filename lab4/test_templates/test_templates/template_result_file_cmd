@@ -20,7 +20,7 @@ res=$($(pwd)/$1)
 
 ret_code=$?
 
-if [[ "$res" = "$3" && $ret_code = $ret && $(cat $4) = $(cat $5) ]]
+if [[ "$res" = "$3" && $ret_code = $ret && "$(cat $4)" = "$(cat $5)" ]]
 then
     exit 0
 else

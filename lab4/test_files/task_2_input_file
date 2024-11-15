@@ -1,0 +1,16 @@
+Rand A				, 10, -100, 100;
+lOad B, test_files/in.txt;
+concat a, b;
+
+
+
+
+        SaVe a, test_files/out.txt;
+        copy a,        0                 , 12           , c;
+        sort c-;
+        Stats c;
+        save c, test_files/out_c.txt;
+        Remove a, 2, 4;
+        SaVe a, test_files/out1.txt;
+        free(    a    );
+        SaVe a, test_files/out2.txt;

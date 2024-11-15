@@ -5,6 +5,6 @@ then
 fi
 
 
-"${BASH_SOURCE%/*}"/template_result_file_outputfile "$1" "0" "$2" "$3" "$4"
+"${BASH_SOURCE%/*}"/template_result_file_output_file "$1" "0" "$2" "$3" "$4"
 
 exit $?

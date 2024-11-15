@@ -111,12 +111,25 @@ int string_comp(const String* s1, const String* s2) {
 	return string_compare(s1->arr, s2->arr);
 }
 
-int string_to_int(const String* s1) {
-	int sum = 0;
-	for (int i = 0; i < s1->size; ++i) {
-		sum = sum * 10 + (s1->arr[i] - '0');
+error_msg string_to_int(String* dst, int* res) {
+	int fl = 0;
+	*res = 0;
+	for (int i = 0; i < dst->size; ++i) {
+		if (dst->arr[i] == '-' && !fl) {
+			fl = 1;
+		} else if (dst->arr[i] >= '0' && dst->arr[i] <= '9'){
+			*res = (*res) * 10 + (dst->arr[i] - '0');
+			if(*res < 0){
+				return OVERFLOW_ERROR;
+			}
+		}else{
+			return INCORRECT_OPTIONS_ERROR;
+		}
 	}
-	return sum;
+	if(fl){
+		*res *= -1;
+	}
+	return SUCCESS;
 }
 
 int read_string(FILE* stream, String* string) {
@@ -191,4 +204,44 @@ int read_string_before_separator(FILE * stream, String * string, char separator)
 		}
 	}
 	return count;
+}
+
+
+void string_to_upper(String * string){
+	for(int i = 0; i < string->size; ++i){
+		if(string->arr[i] >= 'a' && string->arr[i] <= 'z'){
+			string->arr[i] = (char)(string->arr[i] - 'a' + 'A');
+		}
+	}
+}
+
+
+int find_index_string_with_start_index(String * s, char c, int start_index){
+	for(int i = start_index; i < s->size; ++i){
+		if(s->arr[i] == c){
+			return i;
+		}
+	}
+	return -1;
+}
+
+void strip(String* string) {
+	int i = 0;
+	while (string->arr[i] == ' ' || string->arr[i] == '\t' || string->arr[i] == '\n'){
+		i++;
+	}
+
+	string->size -= i;
+	for (int j = 0; j < string->size;++j){
+		string->arr[j] = string->arr[j + i];
+	}
+	string->arr[string->size] = '\0';
+	for(i = string->size - 1; i >= 0; --i){
+		if(string->arr[i] == ' ' || string->arr[i] == '\t' || string->arr[i] == '\n'){
+			string->arr[i] = '\0';
+			string->size -= 1;
+		}else{
+			break;
+		}
+	}
 }
