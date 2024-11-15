@@ -28,7 +28,7 @@ typedef struct HashTable {
 } HashTable;
 
 #define DEFAULT_HASH_TABLE_SIZE 128
-#define MAX_VALUE_HASH ULLONG_MAX
+#define MAX_VALUE_HASH 100000
 
 #define max(a, b) (a > b) ? a : b
 #define min(a, b) (a < b) ? a : b
