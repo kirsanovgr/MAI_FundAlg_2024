@@ -159,7 +159,7 @@ error_msg push_into_hash_table(HashTable *hash_table, String *def_name, String *
 	}
 
 	// Если не было до этого хэша
-	if (h == (unsigned long )hash_table->hash_size + 1) {
+	if (h == (unsigned long)hash_table->hash_size + 1) {
 		h = hash_62(def_name);
 	}
 	unsigned long index = h % hash_table->hash_size;
@@ -177,7 +177,8 @@ error_msg push_into_hash_table(HashTable *hash_table, String *def_name, String *
 	}
 	*max_size_list = max(*max_size_list, hash_table->data[index]->size);
 	for (int i = 0; i < hash_table->hash_size; ++i) {
-		if (hash_table->data[i] && hash_table->data[i]->size > 1) *min_size_list = min(*min_size_list, hash_table->data[i]->size);
+		if (hash_table->data[i] && hash_table->data[i]->size > 1)
+			*min_size_list = min(*min_size_list, hash_table->data[i]->size);
 	}
 	hash_table->hash_count += 1;
 	return SUCCESS;
@@ -257,7 +258,6 @@ error_msg check_all_def(String *res, String *tmp, HashTable *hashTable) {
 					moving = moving->next;
 				}
 			}
-
 		}
 		if (!fl) {
 			errorMsg = push_end_string(res, tmp->arr[i]);
@@ -308,18 +308,20 @@ error_msg build_hash_table(FILE *stream, HashTable *hashTable, String *result) {
 	int min_size = 100000;
 	int position = n;
 	while (!feof(stream)) {
+		strip(&tmp);
 		if (string_cmp(tmp.arr, "#define")) {
 			clear_string(&value);
 			clear_string(&def_name);
 			n = read_string(stream, &def_name);
 			position += n;
 
+			strip(&def_name);
 			if (!is_correct_def_name(&def_name) || n == 0) {
 				destroy_hash_table(hashTable);
 				destroy_string(&tmp);
 				destroy_string(&def_name);
 				destroy_string(&value);
-				return errorMsg;
+				return INCORRECT_OPTIONS_ERROR;
 			}
 			n = read_line(stream, &value);
 			if (value.size > 0) {
@@ -327,8 +329,9 @@ error_msg build_hash_table(FILE *stream, HashTable *hashTable, String *result) {
 				value.size -= 1;
 			}
 			position += n;
-
-			errorMsg = push_into_hash_table(hashTable, &def_name, &value, &max_size, &min_size, hashTable->hash_size + 1);
+			strip(&value);
+			errorMsg =
+			    push_into_hash_table(hashTable, &def_name, &value, &max_size, &min_size, hashTable->hash_size + 1);
 			if (errorMsg) {
 				destroy_hash_table(hashTable);
 				destroy_string(&tmp);
@@ -357,8 +360,6 @@ error_msg build_hash_table(FILE *stream, HashTable *hashTable, String *result) {
 				destroy_string(&def_name);
 				return errorMsg;
 			}
-		} else {
-			break;
 		}
 		clear_string(&tmp);
 		n = read_string(stream, &tmp);
@@ -397,6 +398,8 @@ error_msg read_instruction(FILE *stream, String *result) {
 	errorMsg = create_string(&tmp, "");
 	if (errorMsg) {
 		destroy_hash_table(&hashTable);
+		destroy_string(&value);
+		destroy_string(&def_name);
 		return errorMsg;
 	}
 
@@ -404,9 +407,12 @@ error_msg read_instruction(FILE *stream, String *result) {
 	char c;
 	rewind(stream);
 	clear_string(result);
-	for (int i = 0; i < hashTable.hash_count; ++i) {
-		while ((c = getc(stream)) != EOF && c != '\n') {
-			errorMsg = push_end_string(result, c);
+	clear_string(&tmp);
+	int count_last_define = 0;
+	for (int i = 0; !feof(stream) && count_last_define < hashTable.hash_count; ++i) {
+		clear_string(&tmp);
+		while ((c = getc(stream)) != EOF && ((c != '\n' && c != ' ' && c != '\t'))) {
+			errorMsg = push_end_string(&tmp, c);
 			if (errorMsg) {
 				destroy_hash_table(&hashTable);
 				destroy_string(&tmp);
@@ -415,7 +421,43 @@ error_msg read_instruction(FILE *stream, String *result) {
 				return errorMsg;
 			}
 		}
-		errorMsg = push_end_string(result, '\n');
+		if (tmp.size > 0) {
+			if (string_cmp(tmp.arr, "#define")) {
+				count_last_define++;
+				if(count_last_define == hashTable.hash_count) {
+					fseek(stream, -8, SEEK_CUR);
+					while ((c = getc(stream)) != EOF && c != '\n'){
+						errorMsg = push_end_string(result, c);
+						if (errorMsg) {
+							destroy_hash_table(&hashTable);
+							destroy_string(&tmp);
+							destroy_string(&value);
+							destroy_string(&def_name);
+							return errorMsg;
+						}
+					}
+					errorMsg = push_end_string(result, c);
+					if (errorMsg) {
+						destroy_hash_table(&hashTable);
+						destroy_string(&tmp);
+						destroy_string(&value);
+						destroy_string(&def_name);
+						return errorMsg;
+					}
+					break;
+				}
+			}
+
+			errorMsg = mstrcat(result, &tmp);
+			if (errorMsg) {
+				destroy_hash_table(&hashTable);
+				destroy_string(&tmp);
+				destroy_string(&value);
+				destroy_string(&def_name);
+				return errorMsg;
+			}
+		}
+		errorMsg = push_end_string(result, c);
 		if (errorMsg) {
 			destroy_hash_table(&hashTable);
 			destroy_string(&tmp);
@@ -424,14 +466,6 @@ error_msg read_instruction(FILE *stream, String *result) {
 			return errorMsg;
 		}
 	}
-	//	errorMsg = push_end_string(result, '\n');
-	//	if (errorMsg) {
-	//		destroy_hash_table(&hashTable);
-	//		destroy_string(&tmp);
-	//		destroy_string(&value);
-	//		destroy_string(&def_name);
-	//		return errorMsg;
-	//	}
 
 	clear_string(&tmp);
 	while (1) {
@@ -445,7 +479,7 @@ error_msg read_instruction(FILE *stream, String *result) {
 				destroy_string(&def_name);
 				return errorMsg;
 			}
-			if(c == EOF){
+			if (c == EOF) {
 				break;
 			}
 			errorMsg = push_end_string(result, c);

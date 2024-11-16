@@ -1,0 +1,22 @@
+#define     MAXLENGTH  10
+#define             GREETING         "Hello"
+
+#define             TINGGREE    "HI!"
+#define      PI            3.14
+
+#define A zzz
+
+int main()
+{
+    char message[MAXLENGTH] = GREETING;
+    double radius = 2.5;
+    double area = PI * radius * radius;
+
+    char message1[MAXLENGTH] = TINGGREE;
+    printf("%s\n", message);
+    printf("Circle area: %f\n", area);
+
+    int a = A + A + A + A + C + D;
+
+    return 0;
+}
