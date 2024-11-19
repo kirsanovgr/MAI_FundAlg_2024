@@ -1,0 +1,12 @@
+Load A array1.txt
+Load B array2.txt
+Rand C 10 -100 100
+Concat A B
+Print A all
+Print A 0 2
+Save A output.txt
+Remove A 2 3
+Print A all
+Sort A -
+Print A all
+Stats a
