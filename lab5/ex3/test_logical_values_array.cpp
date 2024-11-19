@@ -12,8 +12,8 @@ TEST(LogicalValuesArrayTest, Equals) {
 	logical_values_array lva1(0xFFFFFFFF);
 	logical_values_array lva2(0xFFFFFFFF);
 	logical_values_array lva3(0x00000000);
-	EXPECT_TRUE(lva1.equals(lva2));
-	EXPECT_FALSE(lva1.equals(lva3));
+	EXPECT_TRUE(lva1.equals(lva1, lva2));
+	EXPECT_FALSE(lva1.equals(lva1, lva3));
 }
 
 // Тест для метода to_char_arr

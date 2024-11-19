@@ -1,7 +1,9 @@
 
 #include "ex3.h"
 unsigned int logical_values_array::get_value() const { return value; }
-bool logical_values_array::equals(const logical_values_array& second) const { return second.get_value() == value; }
+bool logical_values_array::equals(const logical_values_array& first, const logical_values_array& second) {
+	return second.get_value() == first.get_value();
+}
 void logical_values_array::to_char_arr(char* result) const {
 	std::memset(result, '\0', sizeof(unsigned int) * 8);
 	for (int i = sizeof(unsigned int) * 8 - 1, j = 0; i >= 0; --i, j++) {
@@ -28,13 +30,13 @@ logical_values_array logical_values_array::operator<=(const logical_values_array
 	return logical_values_array{(~(*this)) | second};
 }
 logical_values_array logical_values_array::operator>(const logical_values_array& second) const {
-    return ~(*this <= second);
+	return ~(*this <= second);
 }
 logical_values_array logical_values_array::operator==(const logical_values_array& second) const {
-    return logical_values_array{((~(*this)) | second) & (*this | (~(second)))};
+	return logical_values_array{((~(*this)) | second) & (*this | (~(second)))};
 }
 logical_values_array logical_values_array::pierce_arrow(const logical_values_array& second) const {
-    return logical_values_array{~(*this | second)};
+	return logical_values_array{~(*this | second)};
 }
 logical_values_array logical_values_array::sheffer_stroke(const logical_values_array& second) const {
 	return logical_values_array{~(*this & second)};
