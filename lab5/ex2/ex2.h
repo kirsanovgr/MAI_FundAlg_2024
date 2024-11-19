@@ -21,6 +21,7 @@ class encoder {
 	void encode(const std::string& input_filename, const std::string& output_filename,
 	            [[maybe_unused]] bool is_encryption);
 	void set(const std::vector<std::byte>& key);
+	std::vector<std::byte> get() const;
 
 };
 

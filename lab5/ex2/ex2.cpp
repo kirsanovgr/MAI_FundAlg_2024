@@ -80,3 +80,7 @@ std::byte encoder::generate_key_stream(std::vector<std::byte>& s_box, size_t& i,
 	std::swap(s_box[i], s_box[j]);
 	return s_box[(static_cast<size_t>(s_box[i]) + static_cast<size_t>(s_box[j])) % 256];
 }
+std::vector<std::byte> encoder::get() const {
+	return key;
+}
+
