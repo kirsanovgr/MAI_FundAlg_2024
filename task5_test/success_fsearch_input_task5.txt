@@ -1,2 +1,0 @@
-fsearch 1
-stop
