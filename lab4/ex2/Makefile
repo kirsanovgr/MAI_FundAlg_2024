@@ -3,7 +3,7 @@ COMP = gcc
 LIB_FLAGS = -lerrors -lmstring -lvector -L../lib
 
 
-ex1:
+ex2:
 	$(COMP) $(CFLAGS) main.c ex2.c $(LIB_FLAGS) -o ex2.a
 
 

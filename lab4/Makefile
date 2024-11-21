@@ -29,7 +29,10 @@ all:
 	cd lib/mstring/ && make
 	cd lib/vector/ && make
 	cd lib/SystemErrors/ && make
-	for dir in ex1 ex2; do \
+	cd lib2/mstring/ && make
+	cd lib2/vector/ && make
+	cd lib2/SystemErrors2/ && make
+	for dir in ex1 ex2 ex7; do \
 		cd $$dir ;\
 		make ;\
 		mv $$dir.a ../$$dir.a ;\
@@ -38,9 +41,8 @@ all:
 
 
 clean: # Чтобы удалить все исполняемые файлы надо ввести команду make clean
+	rm -r -f */*.a
 	rm -r -f *.a
-	rm -r -d ex2/out*.txt
-
 
 # Принцип формирования названия выполняемого теста:
 #
@@ -110,6 +112,7 @@ task_1_test_3:
 	@echo "TEST 3 (def_name is substring words) PASSED"
 
 test_task_1: task_1_test_1 task_1_test_2 task_1_test_3
+	@echo "ALL TESTS EX1 PASSED"
 
 task_2_test_1:
 	@$(FAILED_CMD) "ex2.a" 6 ""
@@ -136,8 +139,21 @@ task_2_test_6 :
 	@echo "TEST 8(correct out_c.txt) PASSED"
 
 
+task_7_test_1:
+	@$(FAILED_CMD) "ex7.a" 6 ""
+	@echo "TEST 9 (Incorrect count args) PASSED"
+
+task_7_test_2:
+	@$(SUCCESS_OFILE) "ex7.a ex7/test" "test_files/task_7_test_2_correct_output"
+	@echo "TEST 10 PASSED"
+
+test_task_7: task_7_test_1 task_7_test_2
+	@echo "ALL TESTS EX7 PASSED"
+
+
 
 
 test_task_2: task_2_test_1 task_2_test_2 task_2_test_3 task_2_test_4 task_2_test_5  task_2_test_6
+	@echo "ALL TESTS EX2 PASSED"
 
-test: test_task_1 test_task_2
+test: test_task_1 test_task_2 test_task_7

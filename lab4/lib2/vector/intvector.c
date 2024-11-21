@@ -6,51 +6,51 @@
 error_msg create_int_vector(IntVector** vector, int capacity) {
 	*vector = (IntVector*)malloc(sizeof(IntVector));
 	if (!*vector) {
-		return MEMORY_ALLOCATED_ERROR;
+		return (error_msg ){MEMORY_ALLOCATED_ERROR, "create_int_vector", "memory allocated error"};
 	}
 	(*vector)->arr = (int*)malloc(sizeof(int) * capacity);
 	if (!((*vector)->arr)) {
-		return MEMORY_ALLOCATED_ERROR;
+		return (error_msg ){MEMORY_ALLOCATED_ERROR, "create_int_vector", "memory allocated error"};
 	}
 	(*vector)->size = 0;
 	(*vector)->capacity = capacity;
-	return SUCCESS;
+	return (error_msg ){SUCCESS, "", ""};
 }
 
-int resize_int_vector(IntVector* vector, int new_capacity) {
+error_msg resize_int_vector(IntVector* vector, int new_capacity) {
 	int* tmp = (int*)realloc(vector->arr, sizeof(int) * new_capacity);
 	if (!tmp) {
-		return MEMORY_ALLOCATED_ERROR;
+		return (error_msg ){MEMORY_ALLOCATED_ERROR, "resize_int_vector", "memory allocated error"};
 	}
 	vector->arr = tmp;
 	vector->capacity = new_capacity;
-	return SUCCESS;
+	return (error_msg){SUCCESS, "", ""};
 }
 
 error_msg push_end_intvector(IntVector* vector, int new_element) {
 	if (vector->size == vector->capacity) {
 		error_msg error = resize_int_vector(vector, vector->capacity * 2);
-		if (error) return error;
+		if (error.type) return error;
 	}
 	vector->size += 1;
 	vector->arr[vector->size - 1] = new_element;
-	return SUCCESS;
+	return (error_msg ){SUCCESS, "", ""};
 }
 
 error_msg get_intvector(IntVector* vector, int index, int* value) {
 	if (index >= vector->size) {
-		return INDEX_VECTOR_ERROR;
+		return (error_msg ){INDEX_VECTOR_ERROR, "get_int_vector", "incorrect index"};
 	}
 	*value = vector->arr[index];
-	return SUCCESS;
+	return (error_msg ){SUCCESS, "", ""};
 }
 
 error_msg at_intvector(IntVector* vector, int index, int new_element) {
 	if (index >= vector->size) {
-		return INDEX_VECTOR_ERROR;
+		return (error_msg ){INDEX_VECTOR_ERROR, "at_int_vector", "incorrect index"};
 	}
 	vector->arr[index] = new_element;
-	return SUCCESS;
+	return (error_msg ){SUCCESS, "", ""};
 }
 
 int size_intvector(IntVector* vector) { return vector->size; }
@@ -72,13 +72,13 @@ void print_intvector(FILE* stream, IntVector* vector, char* separator) {
 
 error_msg remove_int_vector(IntVector* vector, int index) {
 	if (index >= vector->size || index < 0) {
-		return INDEX_VECTOR_ERROR;
+		return (error_msg ){INDEX_VECTOR_ERROR, "remove_int_vector", "incorrect index"};
 	}
 	for (int i = index; i < vector->size - 1; ++i) {
 		vector->arr[i] = vector->arr[i + 1];
 	}
 	vector->size -= 1;
-	return SUCCESS;
+	return (error_msg ){SUCCESS, "", ""};
 }
 
 int find_max(IntVector* vector) {

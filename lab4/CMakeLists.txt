@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.22)
 project(lab4 C)
 
 set(CMAKE_C_STANDARD 99)
@@ -16,3 +16,12 @@ add_executable(ex2 ex2/ex2.c ex2/ex2.h
         lib/vector/charvector.c
         lib/vector/intvector.c
         lib/mstring/mstring.c)
+
+
+add_executable(ex7 ex7/main.c
+        ex7/ex7.c
+        ex7/ex7.h
+        lib2/SystemErrors2/errors.c
+        lib2/vector/charvector.c
+        lib2/mstring/mstring.c
+)
