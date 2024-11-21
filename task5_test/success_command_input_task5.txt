@@ -1,0 +1,19 @@
+print
+search id 1
+search name Alim
+search surname Taraskaev
+search group 201
+
+sort id
+print
+
+sort name
+print
+
+sort surname 
+print
+
+sort group
+print
+
+stop
