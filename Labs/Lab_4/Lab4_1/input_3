@@ -1,0 +1,7 @@
+#define LANGUAGE C
+#define AUTHOR John Doe
+#define YEAR 2024
+
+Эта строка не содержит макросов.
+LANGUAGE — это язык программирования.
+Эта строка тоже без макросов.
