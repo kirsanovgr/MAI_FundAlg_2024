@@ -92,8 +92,10 @@ error_msg mstrcat(String* first, const String* second) {
 	error_msg errorMsg;
 
 	if (first->capacity < first->size + second->size) {
-		errorMsg = resize_string(first, first->size + second->size + 1);
-		if (errorMsg) return errorMsg;
+		errorMsg = resize_string(first, first->size + second->size + 10);
+		if (errorMsg) {
+			return errorMsg;
+		}
 	}
 
 	errorMsg = my_strcat(first->arr, second->arr);
