@@ -333,7 +333,7 @@ error_msg counting(ArrayOfMemoryCell* arrayOfMemoryCell, String* instruction, Me
 			destroy_string(&rhs_second);
 			return (error_msg){INCORRECT_OPTIONS_ERROR, "equate", "incorrect name of variable"};
 		}
-		MemoryCell* rhs_cell = find_memory_cell(arrayOfMemoryCell, &rhs_first);
+		MemoryCell* rhs_cell = find_memory_cell(arrayOfMemoryCell, &rhs_second);
 		if (!rhs_cell) {
 			destroy_string(&rhs_first);
 			destroy_string(&rhs_second);
@@ -389,7 +389,7 @@ error_msg execution_instruction(ArrayOfMemoryCell* arrayOfMemoryCell, String* in
 		return errorMsg;
 	}
 
-	// TODO
+
 	Operation operation = what_operation(instruction);
 	if (operation.operation == -1) {
 		errorMsg = equate(arrayOfMemoryCell, instruction, lhs_cell, index_eq);
