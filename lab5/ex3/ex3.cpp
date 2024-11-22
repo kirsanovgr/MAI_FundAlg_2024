@@ -5,10 +5,11 @@ bool logical_values_array::equals(const logical_values_array& first, const logic
 	return second.get_value() == first.get_value();
 }
 void logical_values_array::to_char_arr(char* result) const {
-	std::memset(result, '\0', sizeof(unsigned int) * 8);
+	std::memset(result, '\0', sizeof(unsigned int) * 8 + 1);
 	for (int i = sizeof(unsigned int) * 8 - 1, j = 0; i >= 0; --i, j++) {
 		result[j] = (char)((char)((value >> i) & 1) + '0');
 	}
+
 }
 bool logical_values_array::get_bit(unsigned int index) const {
 	if (index >= sizeof(unsigned int) * 8) {
