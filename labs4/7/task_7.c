@@ -8,6 +8,15 @@ typedef struct {
     int value;
 } MemoryCell;
 
+typedef enum {
+    SUCCESS,
+    ERROR_INVALID_ARGUMENTS,
+    ERROR_FILE_NOT_FOUND,
+    ERROR_MEMORY_ALLOCATION,
+    ERROR_SYNTAX,
+    ERROR_INVALID_OPERATION
+} StatusCode;
+
 int compareMemoryCells(const void *a, const void *b) {
     return strcmp(((MemoryCell *)a)->name, ((MemoryCell *)b)->name);
 }
@@ -17,11 +26,11 @@ MemoryCell *findMemoryCell(MemoryCell *cells, int size, const char *name) {
     return (MemoryCell *)bsearch(&key, cells, size, sizeof(MemoryCell), compareMemoryCells);
 }
 
-int addMemoryCell(MemoryCell **cells, int *size, int *capacity, const char *name, int value) {
+StatusCode addMemoryCell(MemoryCell **cells, int *size, int *capacity, const char *name, int value) {
     MemoryCell *existingCell = findMemoryCell(*cells, *size, name);
     if (existingCell) {
         existingCell->value = value;
-        return 0;
+        return SUCCESS;
     }
 
     if (*size >= *capacity) {
@@ -29,19 +38,19 @@ int addMemoryCell(MemoryCell **cells, int *size, int *capacity, const char *name
         MemoryCell *newCells = realloc(*cells, *capacity * sizeof(MemoryCell));
         if (!newCells) {
             free(*cells);
-            return -1;
+            return ERROR_MEMORY_ALLOCATION;
         }
         *cells = newCells;
     }
     (*cells)[*size].name = strdup(name);
     if (!(*cells)[*size].name) {
         free(*cells);
-        return -1;
+        return ERROR_MEMORY_ALLOCATION;
     }
     (*cells)[*size].value = value;
     (*size)++;
     qsort(*cells, *size, sizeof(MemoryCell), compareMemoryCells);
-    return 0;
+    return SUCCESS;
 }
 
 char *readFile(const char *filename) {
@@ -73,13 +82,13 @@ int performOperation(int a, int b, char op) {
         case '/':
             if (b == 0) {
                 fprintf(stderr, "Error: division by zero\n");
-                exit(EXIT_FAILURE);
+                return ERROR_INVALID_OPERATION;
             }
             return a / b;
         case '%':
             if (b == 0) {
                 fprintf(stderr, "Error: modulo by zero\n");
-                return 0;
+                return ERROR_INVALID_OPERATION;
             }
             return a % b;
         default: return 0;
@@ -96,10 +105,10 @@ int isValidVariableName(const char *name) {
     return 1;
 }
 
-int executeCommand(char *command, MemoryCell **cells, int *size, int *capacity) {
+StatusCode executeCommand(char *command, MemoryCell **cells, int *size, int *capacity) {
     char *token = strtok(command, " ");
     if (!token) {
-        return -1;
+        return ERROR_SYNTAX;
     }
 
     if (strcmp(token, "print") == 0) {
@@ -110,7 +119,7 @@ int executeCommand(char *command, MemoryCell **cells, int *size, int *capacity) 
                 printf("%s = %d\n", cell->name, cell->value);
             } else {
                 fprintf(stderr, "Error: variable '%s' not found\n", token);
-                return -1;
+                return ERROR_SYNTAX;
             }
         } else {
             for (int i = 0; i < *size; i++) {
@@ -122,7 +131,7 @@ int executeCommand(char *command, MemoryCell **cells, int *size, int *capacity) 
         char *expression = strtok(NULL, "=");
         if (!name || !expression || !isValidVariableName(name)) {
             fprintf(stderr, "Error: invalid command '%s'\n", command);
-            return -1;
+            return ERROR_SYNTAX;
         }
 
         char *op = strpbrk(expression, "+-*/%");
@@ -142,9 +151,9 @@ int executeCommand(char *command, MemoryCell **cells, int *size, int *capacity) 
                 b = cellB ? cellB->value : 0;
             }
             int result = performOperation(a, b, operator);
-            if (addMemoryCell(cells, size, capacity, name, result) != 0) {
+            if (addMemoryCell(cells, size, capacity, name, result) != SUCCESS) {
                 fprintf(stderr, "Error: could not add variable '%s'\n", name);
-                return -1;
+                return ERROR_MEMORY_ALLOCATION;
             }
         } else {
             int value = strtol(expression, &endptr, 10);
@@ -152,13 +161,13 @@ int executeCommand(char *command, MemoryCell **cells, int *size, int *capacity) 
                 MemoryCell *cell = findMemoryCell(*cells, *size, expression);
                 value = cell ? cell->value : 0;
             }
-            if (addMemoryCell(cells, size, capacity, name, value) != 0) {
+            if (addMemoryCell(cells, size, capacity, name, value) != SUCCESS) {
                 fprintf(stderr, "Error: could not add variable '%s'\n", name);
-                return -1;
+                return ERROR_MEMORY_ALLOCATION;
             }
         }
     }
-    return 0;
+    return SUCCESS;
 }
 
 void parseAndExecuteInstructions(const char *instructions, MemoryCell **cells, int *size, int *capacity) {
@@ -178,7 +187,7 @@ void parseAndExecuteInstructions(const char *instructions, MemoryCell **cells, i
         while (lineEnd > line && isspace(*lineEnd)) *lineEnd-- = '\0';
 
         if (*line != '\0') {
-            if (executeCommand(line, cells, size, capacity) != 0) {
+            if (executeCommand(line, cells, size, capacity) != SUCCESS) {
                 fprintf(stderr, "Error executing command: %s\n", line);
                 break;
             }
@@ -193,13 +202,13 @@ void parseAndExecuteInstructions(const char *instructions, MemoryCell **cells, i
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <instructions_file>\n", argv[0]);
-        return 1;
+        return ERROR_INVALID_ARGUMENTS;
     }
 
     char *instructions = readFile(argv[1]);
     if (!instructions || instructions[0] == '\0') {
         fprintf(stderr, "Error: file is empty or could not read content.\n");
-        return 1;
+        return ERROR_FILE_NOT_FOUND;
     }
 
     int size = 0;
@@ -208,7 +217,7 @@ int main(int argc, char *argv[]) {
     if (!cells) {
         perror("Memory allocation error");
         free(instructions);
-        return 1;
+        return ERROR_MEMORY_ALLOCATION;
     }
 
     parseAndExecuteInstructions(instructions, &cells, &size, &capacity);
@@ -219,5 +228,5 @@ int main(int argc, char *argv[]) {
     free(cells);
     free(instructions);
 
-    return 0;
+    return SUCCESS;
 }
