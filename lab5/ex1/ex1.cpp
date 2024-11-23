@@ -219,27 +219,27 @@ binary_int binary_int::operator>>(binary_int &rhs) {
 	return binary;
 }
 
-binary_int binary_int::operator>>=(binary_int &rhs) {
+binary_int& binary_int::operator>>=(binary_int &rhs) {
 	*this = *this >> rhs;
 	return *this;
 }
 
-binary_int binary_int::operator<<=(binary_int &rhs) {
+binary_int& binary_int::operator<<=(binary_int &rhs) {
 	*this = *this << rhs;
 	return *this;
 }
 
-binary_int binary_int::operator>>=(int rhs) {
+binary_int& binary_int::operator>>=(int rhs) {
 	*this = *this >> rhs;
 	return *this;
 }
 
-binary_int binary_int::operator<<=(int rhs) {
+binary_int& binary_int::operator<<=(int rhs) {
 	*this = *this << rhs;
 	return *this;
 }
 
-binary_int binary_int::operator++() {
+binary_int& binary_int::operator++() &{
 	binary_int tmp{1};
 	*this = *this + tmp;
 	return *this;
@@ -252,7 +252,7 @@ binary_int binary_int::operator++(int) {
 	return tmp;
 }
 
-binary_int binary_int::operator--() {
+binary_int& binary_int::operator--()& {
 	binary_int tmp{1};
 	*this = *this - tmp;
 	return *this;
@@ -265,17 +265,17 @@ binary_int binary_int::operator--(int) {
 	return tmp;
 }
 
-binary_int binary_int::operator+=(binary_int &b) {
+binary_int& binary_int::operator+=(binary_int &b) {
 	*this = *this + b;
 	return *this;
 }
 
-binary_int binary_int::operator-=(binary_int &b) {
+binary_int& binary_int::operator-=(binary_int &b) {
 	*this = *this - b;
 	return *this;
 }
 
-binary_int binary_int::operator*=(binary_int &b) {
+binary_int& binary_int::operator*=(binary_int &b) {
 	*this = *this * b;
 	return *this;
 }

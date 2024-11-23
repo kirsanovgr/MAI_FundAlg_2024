@@ -62,9 +62,9 @@ class Vector {
 
 		double& operator*() const;
 		double* operator->();
-		Iterator& operator++();
+		Iterator& operator++()&;
 		Iterator operator++(int);
-		Iterator& operator--();
+		Iterator& operator--()&;
 		Iterator operator--(int);
 		Iterator operator+(size_t n) const;
 		Iterator operator-(size_t n) const;

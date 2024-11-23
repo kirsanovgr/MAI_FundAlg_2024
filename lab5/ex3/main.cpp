@@ -13,4 +13,6 @@ int main(){
 	std::cout << (a == b) << std::endl;
 	std::cout << a.pierce_arrow(b) << std::endl;
 	std::cout << a.sheffer_stroke(b) << std::endl;
+
+
 }

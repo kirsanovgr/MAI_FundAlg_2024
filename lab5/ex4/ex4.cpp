@@ -21,19 +21,19 @@ Complex Complex::operator/(const Complex& second) const {
 
 double Complex::get_real() const { return real; }
 double Complex::get_imaginary() const { return imaginary; }
-Complex Complex::operator+=(const Complex& second) {
+Complex& Complex::operator+=(const Complex& second) {
     *this = *this + second;
 	return *this;
 }
-Complex Complex::operator-=(const Complex& second) {
+Complex& Complex::operator-=(const Complex& second) {
 	*this = *this - second;
 	return *this;
 }
-Complex Complex::operator*=(const Complex& second) {
+Complex& Complex::operator*=(const Complex& second) {
 	*this = *this * second;
 	return *this;
 }
-Complex Complex::operator/=(const Complex& second) {
+Complex& Complex::operator/=(const Complex& second) {
     *this = *this / second;
 	return *this;
 }

@@ -28,24 +28,24 @@ class binary_int {
 
 	binary_int operator-();
 	binary_int operator+(binary_int &b);
-	binary_int operator+=(binary_int &b);
+	binary_int& operator+=(binary_int &b);
 	binary_int operator-(binary_int &b);
-	binary_int operator-=(binary_int &b);
+	binary_int& operator-=(binary_int &b);
 	binary_int operator*(binary_int &b);
-	binary_int operator*=(binary_int &b);
-	binary_int operator++();
+	binary_int& operator*=(binary_int &b);
+	binary_int& operator++()&;
 	binary_int operator++(int);
-	binary_int operator--();
+	binary_int& operator--()&;
 	binary_int operator--(int);
 
 	binary_int operator<<(int shift);
 	binary_int operator>>(int shift);
 	binary_int operator<<(binary_int &rhs);
 	binary_int operator>>(binary_int &rhs);
-	binary_int operator>>=(binary_int &rhs);
-	binary_int operator<<=(binary_int &rhs);
-	binary_int operator>>=(int rhs);
-	binary_int operator<<=(int rhs);
+	binary_int& operator>>=(binary_int &rhs);
+	binary_int& operator<<=(binary_int &rhs);
+	binary_int& operator>>=(int rhs);
+	binary_int& operator<<=(int rhs);
 
 	std::pair<binary_int, binary_int> to_parts();
 };

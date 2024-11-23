@@ -1,9 +1,7 @@
 
 
 #include "ex6.h"
-Vector::Vector(const size_t n, const double default_value) {
-	_size = n;
-	_capacity = n;
+Vector::Vector(const size_t n, const double default_value) : _size(n), _capacity(n){
 	_data = new double[n];
 	for (int i = 0; i < n; ++i) {
 		_data[i] = default_value;
@@ -141,7 +139,7 @@ std::ostream &operator<<(std::ostream &ostream, const Vector &vector) {
 double &Vector::Iterator::operator*() const { return *ptr; }
 double *Vector::Iterator::operator->() { return ptr; }
 
-Vector::Iterator &Vector::Iterator::operator++() {
+Vector::Iterator &Vector::Iterator::operator++()& {
 	++ptr;
 	return *this;
 }
@@ -151,7 +149,7 @@ Vector::Iterator Vector::Iterator::operator++(int) {
 	return tmp;
 }
 
-Vector::Iterator &Vector::Iterator::operator--() {
+Vector::Iterator &Vector::Iterator::operator--()& {
 	--ptr;
 	return *this;
 }
