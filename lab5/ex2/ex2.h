@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 class not_open_stream : std::exception {};
 

@@ -10,6 +10,9 @@ void encoder::set(const std::vector<std::byte>& key) { this->key = key; }
 
 void encoder::encode(const std::string& input_filename, const std::string& output_filename,
                      [[maybe_unused]] const bool is_encryption) {
+	if(std::filesystem::equivalent(input_filename, output_filename)){
+		throw not_open_stream();
+	}
 	std::ifstream in;
 	in.open(input_filename, std::ios::binary);
 	if (!in.is_open()) {
