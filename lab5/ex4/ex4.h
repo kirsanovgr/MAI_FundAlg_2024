@@ -18,13 +18,13 @@ class Complex {
 	double get_imaginary() const;
 
 	Complex operator+(const Complex& second) const;
-	Complex& operator+=(const Complex& second);
+	Complex& operator+=(const Complex& second)&;
 	Complex operator-(const Complex& second) const;
-	Complex& operator-=(const Complex& second);
+	Complex& operator-=(const Complex& second)&;
 	Complex operator*(const Complex& second) const;
-	Complex& operator*=(const Complex& second);
+	Complex& operator*=(const Complex& second)&;
 	Complex operator/(const Complex& second) const;
-	Complex& operator/=(const Complex& second);
+	Complex& operator/=(const Complex& second)&;
 	Complex operator-() const;
 
 	double absolute() const;

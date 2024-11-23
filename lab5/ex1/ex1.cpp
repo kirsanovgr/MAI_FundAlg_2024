@@ -103,15 +103,14 @@ binary_int binary_int::operator*(binary_int &second) {
 	binary_int tmp_this = *this;
 	binary_int tmp_second = second;
 	int count = 0;
-	if(this->get_bit_representation()[0]){
+	if (this->get_bit_representation()[0]) {
 		tmp_this = -tmp_this;
 		count += 1;
 	}
-	if(second.get_bit_representation()[0]){
+	if (second.get_bit_representation()[0]) {
 		count += 1;
 		tmp_second = -tmp_second;
 	}
-
 
 	bool tmp[tmp_this.get_count_bits()];
 	std::memmove(tmp, tmp_this.bit_representation, count_bits);
@@ -121,15 +120,13 @@ binary_int binary_int::operator*(binary_int &second) {
 	memset(new_number, false, get_count_bits());
 	binary_int binary{new_number};
 
-
 	for (int i = add(get_count_bits(), -1); i >= 0; i--) {
 		if (tmp_second.get_bit_representation()[i]) {
 			binary = (tmp_binary_int + binary);
-
 		}
 		tmp_binary_int <<= 1;
 	}
-	if(count == 1){
+	if (count == 1) {
 		binary = -binary;
 	}
 
@@ -162,7 +159,7 @@ binary_int binary_int::operator>>(int shift) {
 	bool new_number[this->get_count_bits()];
 	std::memmove(new_number, this->get_bit_representation(), get_count_bits());
 	bool fl = false;
-	if(new_number[0]){
+	if (new_number[0]) {
 		fl = true;
 	}
 	int i;
@@ -219,27 +216,27 @@ binary_int binary_int::operator>>(binary_int &rhs) {
 	return binary;
 }
 
-binary_int& binary_int::operator>>=(binary_int &rhs) {
+binary_int &binary_int::operator>>=(binary_int &rhs) & {
 	*this = *this >> rhs;
 	return *this;
 }
 
-binary_int& binary_int::operator<<=(binary_int &rhs) {
+binary_int &binary_int::operator<<=(binary_int &rhs) & {
 	*this = *this << rhs;
 	return *this;
 }
 
-binary_int& binary_int::operator>>=(int rhs) {
+binary_int &binary_int::operator>>=(int rhs) & {
 	*this = *this >> rhs;
 	return *this;
 }
 
-binary_int& binary_int::operator<<=(int rhs) {
+binary_int &binary_int::operator<<=(int rhs) & {
 	*this = *this << rhs;
 	return *this;
 }
 
-binary_int& binary_int::operator++() &{
+binary_int &binary_int::operator++() & {
 	binary_int tmp{1};
 	*this = *this + tmp;
 	return *this;
@@ -247,12 +244,11 @@ binary_int& binary_int::operator++() &{
 
 binary_int binary_int::operator++(int) {
 	binary_int tmp{get_bit_representation()};
-	binary_int tmp2{1};
-	*this = *this + tmp2;
+	++(*this);
 	return tmp;
 }
 
-binary_int& binary_int::operator--()& {
+binary_int &binary_int::operator--() & {
 	binary_int tmp{1};
 	*this = *this - tmp;
 	return *this;
@@ -260,22 +256,21 @@ binary_int& binary_int::operator--()& {
 
 binary_int binary_int::operator--(int) {
 	binary_int tmp{get_bit_representation()};
-	binary_int tmp2{1};
-	*this = *this - tmp2;
+	--(*this);
 	return tmp;
 }
 
-binary_int& binary_int::operator+=(binary_int &b) {
+binary_int &binary_int::operator+=(binary_int &b) & {
 	*this = *this + b;
 	return *this;
 }
 
-binary_int& binary_int::operator-=(binary_int &b) {
+binary_int &binary_int::operator-=(binary_int &b) & {
 	*this = *this - b;
 	return *this;
 }
 
-binary_int& binary_int::operator*=(binary_int &b) {
+binary_int &binary_int::operator*=(binary_int &b)& {
 	*this = *this * b;
 	return *this;
 }
