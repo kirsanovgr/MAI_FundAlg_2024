@@ -1,0 +1,4 @@
+char* a;
+int** b;
+float d[10];
+int (*func)();

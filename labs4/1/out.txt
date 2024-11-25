@@ -1,0 +1,5 @@
+#define NAME ALIMOV_I
+#define YEAR 2024
+
+Hello, my name is ALIMOV_I.
+It is now 2024.
