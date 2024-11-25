@@ -211,7 +211,6 @@ Vector::Vector(std::initializer_list<double> init) {
 	std::copy(init.begin(), init.end(), _data);
 }
 
-
 Vector::Vector(const Vector &vector) {
 	_size = vector._size;
 	_capacity = vector._capacity;
@@ -231,3 +230,11 @@ Vector &Vector::operator=(const Vector &vector) {
 double &Vector::Iterator::operator[](size_t index) { return *(ptr + index); }
 
 const double &Vector::Iterator::operator[](size_t index) const { return *(ptr + index); }
+
+bool Vector::Iterator::operator<=(const Vector::Iterator &other) const {
+	return (*this <=> other) == std::weak_ordering::less || (*this <=> other) == std::weak_ordering::equivalent;
+}
+
+bool Vector::Iterator::operator>=(const Vector::Iterator &other) const {
+	return (*this <=> other) == std::weak_ordering::greater || (*this <=> other) == std::weak_ordering::equivalent;
+}

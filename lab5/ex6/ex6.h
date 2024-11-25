@@ -74,6 +74,8 @@ class Vector {
 		bool operator==(const Iterator& other) const;
 		std::weak_ordering operator<=>(const Iterator& other) const;
 		bool operator<(const Iterator& other) const;
+		bool operator<=(const Iterator& other) const;
+		bool operator>=(const Iterator& other) const;
 		bool operator>(const Iterator& other) const;
 		bool operator!=(const Iterator& other) const;
 		double& operator[](size_t index);
@@ -98,4 +100,5 @@ Vector::Vector(InputIt begin, InputIt end) {
 }
 
 
+#endif  // LAB5_EX6_H
 #endif  // LAB5_EX6_H
