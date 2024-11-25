@@ -31,6 +31,7 @@ TEST(VectorTest, IteratorConstructor) {
 	std::vector<double> init = {1.0, 2.0, 3.0};
 	Vector v(init.begin(), init.end());
 	EXPECT_EQ(v.size(), 3);
+	EXPECT_EQ(v.size(), 3);
 	EXPECT_EQ(v.capacity(), 3);
 	for (size_t i = 0; i < v.size(); ++i) {
 		EXPECT_EQ(v[i], init[i]);

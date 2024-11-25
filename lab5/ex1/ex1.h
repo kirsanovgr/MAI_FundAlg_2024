@@ -11,7 +11,7 @@ int sub(int a, int b);
 
 class binary_int {
    protected:
-	bool bit_representation[32];
+	bool bit_representation[sizeof(int) * 8];
 
 	// конструктор получающий массив bool
 	binary_int(const bool *number);
@@ -22,6 +22,8 @@ class binary_int {
 
    public:
 	binary_int(int number = 0);
+	binary_int(const binary_int & bi);
+	binary_int&operator=(const binary_int & bi);
 
 	bool *get_bit_representation();
 	int get_count_bits() const;

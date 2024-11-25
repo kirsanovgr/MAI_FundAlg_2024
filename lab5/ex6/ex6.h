@@ -17,7 +17,9 @@ class Vector {
 
    public:
 	Vector(size_t n = 0, double default_value = 0);
-	Vector(const double * begin, const double *end);
+
+	template<typename InputIt>
+	Vector(InputIt begin, InputIt end);
 	Vector(std::initializer_list<double> init);
 	Vector(const Vector & vector);
 	Vector& operator=(const Vector & vector);
@@ -49,7 +51,7 @@ class Vector {
 	const double* data() const;
 
 	bool operator==(const Vector& other) const;
-	int operator<=>(const Vector& other) const;
+	std::weak_ordering operator<=>(const Vector& other) const;
 
 	class Iterator {
 	   private:
@@ -65,10 +67,17 @@ class Vector {
 		Iterator& operator--()&;
 		Iterator operator--(int);
 		Iterator operator+(size_t n) const;
+		Iterator& operator+=(size_t n) &;
+		Iterator& operator-=(size_t n) &;
 		Iterator operator-(size_t n) const;
 		size_t operator-(const Iterator& other) const;
 		bool operator==(const Iterator& other) const;
+		std::weak_ordering operator<=>(const Iterator& other) const;
+		bool operator<(const Iterator& other) const;
+		bool operator>(const Iterator& other) const;
 		bool operator!=(const Iterator& other) const;
+		double& operator[](size_t index);
+		const double& operator[](size_t index) const;
 	};
 
 	Iterator begin();
@@ -79,5 +88,14 @@ class Vector {
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Vector& vector);
+
+template<typename InputIt>
+Vector::Vector(InputIt begin, InputIt end) {
+	_size = std::distance(begin, end);
+	_capacity = _size;
+	_data = new double [_size];
+	std::copy(begin, end, _data);
+}
+
 
 #endif  // LAB5_EX6_H

@@ -14,6 +14,8 @@ class logical_values_array {
 
    public:
 	logical_values_array(unsigned int value = 0) : value(value){};
+	logical_values_array(const logical_values_array& ar);
+	logical_values_array& operator=(const logical_values_array& ar);
 
 	unsigned int get_value() const;
 
@@ -25,13 +27,11 @@ class logical_values_array {
 	logical_values_array operator&(const logical_values_array& second) const;
 	logical_values_array operator|(const logical_values_array& second) const;
 	logical_values_array operator^(const logical_values_array& second) const;
-	logical_values_array operator<=(const logical_values_array& second) const; // импликация
-	logical_values_array operator>(const logical_values_array& second) const; // коимпликация
+	logical_values_array operator<=(const logical_values_array& second) const;  // импликация
+	logical_values_array operator>(const logical_values_array& second) const;   // коимпликация
 	logical_values_array operator==(const logical_values_array& second) const;
 	logical_values_array pierce_arrow(const logical_values_array& second) const;
 	logical_values_array sheffer_stroke(const logical_values_array& second) const;
-
-
 };
 
 std::ostream& operator<<(std::ostream& out, const logical_values_array& value);

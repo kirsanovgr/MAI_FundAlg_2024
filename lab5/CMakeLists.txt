@@ -43,9 +43,18 @@ add_executable(test_ex6
         ex6/ex6.cpp
         ex6/ex6.h)
 
+
+add_executable(ex7 ex7/ex7.cpp ex7/ex7.h
+        ex7/main.cpp)
+
+add_executable(test_ex7 ex7/test_ex7.cpp
+        ex7/ex7.cpp ex7/ex7.h)
+
 target_link_libraries(test_ex3 ${GTEST_LIBRARIES} pthread)
 
 target_link_libraries(test_ex4 ${GTEST_LIBRARIES} pthread)
 
 target_link_libraries(test_ex6 ${GTEST_LIBRARIES} pthread)
+
+target_link_libraries(test_ex7 ${GTEST_LIBRARIES} pthread)
 

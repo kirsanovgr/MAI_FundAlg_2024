@@ -43,6 +43,17 @@ logical_values_array logical_values_array::sheffer_stroke(const logical_values_a
 	return logical_values_array{~(*this & second)};
 }
 
+logical_values_array::logical_values_array(const logical_values_array& ar) {
+	value = ar.get_value();
+}
+
+logical_values_array& logical_values_array::operator=(const logical_values_array& ar){
+	if(&ar != this){
+		value = ar.get_value();
+	}
+	return *this;
+}
+
 std::ostream& operator<<(std::ostream& out, const logical_values_array& el) {
 	for (int i = sizeof(unsigned int) * 8 - 1; i >= 0; --i) {
 		out << ((el.get_value() >> i) & 1);

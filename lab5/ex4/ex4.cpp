@@ -42,6 +42,17 @@ Complex& Complex::operator/=(const Complex& second) & {
 Complex Complex::operator-() const { return Complex{-real, -imaginary}; }
 double Complex::absolute() const { return std::sqrt(real * real + imaginary * imaginary); }
 double Complex::argument() const { return std::atan2(imaginary, real); }
+Complex::Complex(const Complex& complex) {
+	real = complex.get_real();
+	imaginary = complex.get_imaginary();
+}
+Complex& Complex::operator=(const Complex& complex){
+	if(this != &complex){
+		real = complex.get_real();
+		imaginary = complex.get_imaginary();
+	}
+	return *this;
+}
 
 std::ostream& operator<<(std::ostream& out, const Complex& complex) {
 	out << complex.get_real() << " " << complex.get_imaginary() << "i" << std::endl;

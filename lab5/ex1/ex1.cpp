@@ -285,6 +285,17 @@ std::pair<binary_int, binary_int> binary_int::to_parts() {
 
 	return {binary_int{left}, binary_int{right}};
 }
+binary_int::binary_int(const binary_int &bi) {
+    this->count_bits = bi.get_count_bits();
+	std::memmove(bit_representation, bi.bit_representation, bi.get_count_bits());
+}
+binary_int &binary_int::operator=(const binary_int &bi){
+	if(&bi != this){
+		this->count_bits = bi.get_count_bits();
+		std::memmove(bit_representation, bi.bit_representation, bi.get_count_bits());
+	}
+	return *this;
+}
 
 std::ostream &operator<<(std::ostream &out, binary_int &binary) {
 	if (binary.get_bit_representation()[0]) {
