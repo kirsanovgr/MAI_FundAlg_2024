@@ -185,15 +185,25 @@ Vector::Vector(std::initializer_list<double> init) {
 	_data = new double[_size];
 	std::copy(init.begin(), init.end(), _data);
 }
-Vector::Vector(std::vector<double>::iterator begin, std::vector<double>::iterator end) {
+Vector::Vector(const double * begin, const double * end) {
 	_size = end - begin;
 	_capacity = _size;
 	_data = new double [_size];
 	std::copy(begin, end, _data);
 }
-Vector::Vector(std::vector<double>::const_iterator begin, std::vector<double>::const_iterator end) {
-	_size = end - begin;
-	_capacity = _size;
+
+Vector::Vector(const Vector &vector) {
+	_size = vector._size;
+	_capacity = vector._capacity;
 	_data = new double [_size];
-	std::copy(begin, end, _data);
+	std::memmove(_data, vector._data, _size);
+}
+
+Vector &Vector::operator=(const Vector &vector) {
+	if(this != &vector){
+		_size = vector.size();
+		_capacity = vector.capacity();
+		_data = vector._data;
+	}
+	return *this;
 }
