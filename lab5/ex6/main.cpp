@@ -3,8 +3,8 @@
 
 #include <vector>
 int main(){
-	double b[] = {1, 2, 3};
-	Vector a(b, b + 3);
+	std::vector<double> b = {1, 2, 3};
+	Vector a(12, 23);
 	a.insert(8, 3);
 	std::cout << a.back() << std::endl;
 	std::cout << a;

@@ -19,9 +19,13 @@ class Vector {
    public:
 	explicit Vector(size_t n = 0, double default_value = 0);
 
-	Vector(const double *begin, const double *end);
+	class Iterator;
+
+	template <class InputIt>
+	Vector(InputIt begin, InputIt end, typename InputIt::iterator_category *p = 0);
 
 	Vector(std::initializer_list<double> init);
+
 	Vector(const Vector & vector);
 
 	Vector& operator=(const Vector & vector);
@@ -55,43 +59,58 @@ class Vector {
 	bool operator==(const Vector& other) const;
 	std::weak_ordering operator<=>(const Vector& other) const;
 
-	class Iterator {
-	   private:
-		double* ptr;
-
-	   public:
-		Iterator(double* prt) : ptr(prt){};
-
-		double& operator*() const;
-		double* operator->();
-		Iterator& operator++()&;
-		Iterator operator++(int);
-		Iterator& operator--()&;
-		Iterator operator--(int);
-		Iterator operator+(size_t n) const;
-		Iterator& operator+=(size_t n) &;
-		Iterator& operator-=(size_t n) &;
-		Iterator operator-(size_t n) const;
-		size_t operator-(const Iterator& other) const;
-		bool operator==(const Iterator& other) const;
-		std::weak_ordering operator<=>(const Iterator& other) const;
-		bool operator<(const Iterator& other) const;
-		bool operator<=(const Iterator& other) const;
-		bool operator>=(const Iterator& other) const;
-		bool operator>(const Iterator& other) const;
-		bool operator!=(const Iterator& other) const;
-		double& operator[](size_t index);
-		const double& operator[](size_t index) const;
-	};
-
 	Iterator begin();
 	Iterator end();
 
-	Iterator begin() const;
-	Iterator end() const;
+	const Iterator begin() const;
+	const Iterator end() const;
 };
 
-
 std::ostream& operator<<(std::ostream& ostream, const Vector& vector);
+
+
+class Vector::Iterator {
+   private:
+	double* ptr;
+
+   public:
+	using iterator_category = std::random_access_iterator_tag;
+	using value_type = double;
+	using difference_type = std::ptrdiff_t;
+	using pointer = double*;
+	using reference = double&;
+
+	explicit Iterator(pointer prt) : ptr(prt){};
+
+	reference operator*() const;
+	pointer operator->();
+	Iterator& operator++();
+	Iterator operator++(int);
+	Iterator& operator--()&;
+	Iterator operator--(int);
+	Iterator operator+(difference_type n) const;
+	Iterator& operator+=(difference_type n) &;
+	Iterator& operator-=(difference_type n) &;
+	Iterator operator-(difference_type n) const;
+	difference_type operator-(const Iterator& other) const;
+	bool operator==(const Iterator& other) const;
+	std::weak_ordering operator<=>(const Iterator& other) const;
+	bool operator<(const Iterator& other) const;
+	bool operator<=(const Iterator& other) const;
+	bool operator>=(const Iterator& other) const;
+	bool operator>(const Iterator& other) const;
+	bool operator!=(const Iterator& other) const;
+	double& operator[](size_t index);
+	const double& operator[](size_t index) const;
+};
+
+template <class InputIt>
+Vector::Vector(InputIt begin, InputIt end, InputIt::iterator_category *p)  {
+	_size = end - begin;
+	_capacity = _size;
+	_data = new double [_size];
+	std::copy(begin, end, _data);
+}
+
 
 #endif  // LAB5_EX6_H

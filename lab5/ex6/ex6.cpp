@@ -139,7 +139,7 @@ std::ostream &operator<<(std::ostream &ostream, const Vector &vector) {
 double &Vector::Iterator::operator*() const { return *ptr; }
 double *Vector::Iterator::operator->() { return ptr; }
 
-Vector::Iterator &Vector::Iterator::operator++()& {
+Vector::Iterator &Vector::Iterator::operator++() {
 	++ptr;
 	return *this;
 }
@@ -159,21 +159,21 @@ Vector::Iterator Vector::Iterator::operator--(int) {
 	return tmp;
 }
 
-Vector::Iterator Vector::Iterator::operator+(size_t n) const { return Iterator{ptr + n}; }
+Vector::Iterator Vector::Iterator::operator+(difference_type n) const { return Iterator{ptr + n}; }
 
-Vector::Iterator Vector::Iterator::operator-(size_t n) const { return Iterator{ptr - n}; }
+Vector::Iterator Vector::Iterator::operator-(difference_type n) const { return Iterator{ptr - n}; }
 
-size_t Vector::Iterator::operator-(const Vector::Iterator &other) const { return ptr - other.ptr; }
+Vector::Iterator::difference_type Vector::Iterator::operator-(const Vector::Iterator &other) const { return ptr - other.ptr; }
 
 bool Vector::Iterator::operator==(const Iterator &other) const { return ptr == other.ptr; }
 
 bool Vector::Iterator::operator!=(const Iterator &other) const { return ptr != other.ptr; }
 
-Vector::Iterator &Vector::Iterator::operator+=(size_t n) & {
+Vector::Iterator &Vector::Iterator::operator+=(difference_type n) & {
 	*this = *this + n;
 	return *this;
 }
-Vector::Iterator &Vector::Iterator::operator-=(size_t n) & {
+Vector::Iterator &Vector::Iterator::operator-=(difference_type n) & {
 	*this = *this - n;
 	return *this;
 }
@@ -198,9 +198,9 @@ Vector::Iterator Vector::begin() { return Vector::Iterator{_data}; }
 
 Vector::Iterator Vector::end() { return Vector::Iterator{_data + _size}; }
 
-Vector::Iterator Vector::begin() const { return Vector::Iterator{_data}; }
+const Vector::Iterator Vector::begin() const { return Vector::Iterator{_data}; }
 
-Vector::Iterator Vector::end() const { return Vector::Iterator{_data + _size}; }
+const Vector::Iterator Vector::end() const { return Vector::Iterator{_data + _size}; }
 
 bool Vector::empty() const { return _size == 0; }
 
@@ -225,12 +225,6 @@ Vector &Vector::operator=(const Vector &vector) {
 		_data = vector._data;
 	}
 	return *this;
-}
-Vector::Vector(const double *begin, const double *end) {
-	_size = end - begin;
-	_capacity = _size;
-	_data = new double [_size];
-	std::copy(begin, end, _data);
 }
 
 double &Vector::Iterator::operator[](size_t index) { return *(ptr + index); }
