@@ -2,26 +2,28 @@
 #ifndef LAB5_EX6_H
 #define LAB5_EX6_H
 
+#include <algorithm>
 #include <cstring>
-#include <iostream>
 #include <initializer_list>
-
+#include <iostream>
+#include <iterator>
 
 class incorrect_index : std::exception {};
 
 class Vector {
    private:
-	double* _data;
-	size_t _size;
-	size_t _capacity;
+	double* _data{};
+	size_t _size{};
+	size_t _capacity{};
 
    public:
-	Vector(size_t n = 0, double default_value = 0);
+	explicit Vector(size_t n = 0, double default_value = 0);
 
-	template<typename InputIt>
-	Vector(InputIt begin, InputIt end);
+	Vector(const double *begin, const double *end);
+
 	Vector(std::initializer_list<double> init);
 	Vector(const Vector & vector);
+
 	Vector& operator=(const Vector & vector);
 
 	~Vector();
@@ -89,16 +91,7 @@ class Vector {
 	Iterator end() const;
 };
 
+
 std::ostream& operator<<(std::ostream& ostream, const Vector& vector);
 
-template<typename InputIt>
-Vector::Vector(InputIt begin, InputIt end) {
-	_size = std::distance(begin, end);
-	_capacity = _size;
-	_data = new double [_size];
-	std::copy(begin, end, _data);
-}
-
-
-#endif  // LAB5_EX6_H
 #endif  // LAB5_EX6_H

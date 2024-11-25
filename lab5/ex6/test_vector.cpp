@@ -28,8 +28,8 @@ TEST(VectorTest, SizeValueConstructor) {
 }
 
 TEST(VectorTest, IteratorConstructor) {
-	std::vector<double> init = {1.0, 2.0, 3.0};
-	Vector v(init.begin(), init.end());
+	double init[] = {1.0, 2.0, 3.0};
+	Vector v(init, init + 3);
 	EXPECT_EQ(v.size(), 3);
 	EXPECT_EQ(v.size(), 3);
 	EXPECT_EQ(v.capacity(), 3);

@@ -226,6 +226,12 @@ Vector &Vector::operator=(const Vector &vector) {
 	}
 	return *this;
 }
+Vector::Vector(const double *begin, const double *end) {
+	_size = end - begin;
+	_capacity = _size;
+	_data = new double [_size];
+	std::copy(begin, end, _data);
+}
 
 double &Vector::Iterator::operator[](size_t index) { return *(ptr + index); }
 
