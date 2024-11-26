@@ -13,8 +13,6 @@ add_executable(ex1 ex1/ex1.cpp ex1/ex1.hpp
 
 set(CMAKE_C_FLAGS -fsanitize=address)
 
-add_executable(ex2 ex2/ex2.cpp ex2/ex2.hpp
-        ex2/main.cpp)
 
 add_executable(ex3 ex3/ex3.cpp ex3/ex3.hpp
         ex3/main.cpp

@@ -1,5 +1,6 @@
 COMP = g++
-CFLAGS = ex2.cpp -Wall -Wextra -Werror -g -fsanitize=address
+C++FLAGS = -std=c++20 -Wall -Wextra -Werror
 
-ex2: main.cpp
-	$(COMP) $(CFLAGS) main.cpp
+
+ex2:
+	$(COMP) $(C++FLAGS) main.cpp ex2.cpp

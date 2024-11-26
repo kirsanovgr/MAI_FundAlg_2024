@@ -130,19 +130,6 @@ ex1/fast:
 .PHONY : ex1/fast
 
 #=============================================================================
-# Target rules for targets named ex2
-
-# Build rule for target.
-ex2: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ex2
-.PHONY : ex2
-
-# fast build rule for target.
-ex2/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/build
-.PHONY : ex2/fast
-
-#=============================================================================
 # Target rules for targets named ex3
 
 # Build rule for target.
@@ -333,54 +320,6 @@ ex1/main.s: ex1/main.cpp.s
 ex1/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex1.dir/build.make CMakeFiles/ex1.dir/ex1/main.cpp.s
 .PHONY : ex1/main.cpp.s
-
-ex2/ex2.o: ex2/ex2.cpp.o
-.PHONY : ex2/ex2.o
-
-# target to build an object file
-ex2/ex2.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/ex2/ex2.cpp.o
-.PHONY : ex2/ex2.cpp.o
-
-ex2/ex2.i: ex2/ex2.cpp.i
-.PHONY : ex2/ex2.i
-
-# target to preprocess a source file
-ex2/ex2.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/ex2/ex2.cpp.i
-.PHONY : ex2/ex2.cpp.i
-
-ex2/ex2.s: ex2/ex2.cpp.s
-.PHONY : ex2/ex2.s
-
-# target to generate assembly for a file
-ex2/ex2.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/ex2/ex2.cpp.s
-.PHONY : ex2/ex2.cpp.s
-
-ex2/main.o: ex2/main.cpp.o
-.PHONY : ex2/main.o
-
-# target to build an object file
-ex2/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/ex2/main.cpp.o
-.PHONY : ex2/main.cpp.o
-
-ex2/main.i: ex2/main.cpp.i
-.PHONY : ex2/main.i
-
-# target to preprocess a source file
-ex2/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/ex2/main.cpp.i
-.PHONY : ex2/main.cpp.i
-
-ex2/main.s: ex2/main.cpp.s
-.PHONY : ex2/main.s
-
-# target to generate assembly for a file
-ex2/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ex2.dir/build.make CMakeFiles/ex2.dir/ex2/main.cpp.s
-.PHONY : ex2/main.cpp.s
 
 ex3/ex3.o: ex3/ex3.cpp.o
 .PHONY : ex3/ex3.o
@@ -691,7 +630,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ex1"
-	@echo "... ex2"
 	@echo "... ex3"
 	@echo "... ex4"
 	@echo "... ex6"
@@ -710,12 +648,6 @@ help:
 	@echo "... ex1/main.o"
 	@echo "... ex1/main.i"
 	@echo "... ex1/main.s"
-	@echo "... ex2/ex2.o"
-	@echo "... ex2/ex2.i"
-	@echo "... ex2/ex2.s"
-	@echo "... ex2/main.o"
-	@echo "... ex2/main.i"
-	@echo "... ex2/main.s"
 	@echo "... ex3/ex3.o"
 	@echo "... ex3/ex3.i"
 	@echo "... ex3/ex3.s"
