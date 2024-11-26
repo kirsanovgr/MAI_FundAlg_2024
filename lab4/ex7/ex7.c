@@ -346,6 +346,12 @@ error_msg counting(ArrayOfMemoryCell* arrayOfMemoryCell, String* instruction, Me
 		return errorMsg;
 	}
 
+	if(data_second == 0 && operation.operation == 3){
+		destroy_string(&rhs_first);
+		destroy_string(&rhs_second);
+		return (error_msg){INCORRECT_OPTIONS_ERROR, "counting", "divide by null"};
+	}
+
 	memoryCell->value = operations[operation.operation](data_first, data_second);
 
 	destroy_string(&rhs_first);
