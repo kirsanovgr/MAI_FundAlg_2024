@@ -85,10 +85,10 @@ std::ostream &operator<<(std::ostream &stream, binary_int binaryInt) {
 }
 
 std::pair<binary_int, binary_int> binary_int::to_parts() const {
-	binary_int half_bits = sizeof(int) * 4;
+	binary_int half_bits = sizeof(int) * 8 / 2;
 	binary_int high_bits = ((*this >> half_bits) & (((binary_int)(1) << half_bits) - 1)) << half_bits;
 	binary_int low_bits = *this & (((binary_int)(1) << half_bits) - 1);
-	return std::make_pair(high_bits, low_bits);
+	return {high_bits, low_bits};
 }
 
 binary_int binary_int::operator<<(binary_int x) const { return this->number << x.number; }
