@@ -4,7 +4,6 @@
 
 #include "ex6.hpp"
 
-// Тесты для конструкторов
 TEST(VectorTest, DefaultConstructor) {
 	Vector v;
 	EXPECT_EQ(v.size(), 0);
@@ -49,7 +48,6 @@ TEST(VectorTest, InitializerListConstructor) {
 	}
 }
 
-// Тесты для метода at
 TEST(VectorTest, At) {
 	Vector v = {1.0, 2.0, 3.0};
 	EXPECT_EQ(v.at(0), 1.0);
@@ -66,7 +64,6 @@ TEST(VectorTest, AtConst) {
 	EXPECT_THROW(v.at(3), std::range_error);
 }
 
-// Тесты для метода front
 TEST(VectorTest, Front) {
 	Vector v = {1.0, 2.0, 3.0};
 	EXPECT_EQ(v.front(), 1.0);
@@ -79,7 +76,6 @@ TEST(VectorTest, FrontConst) {
 	EXPECT_EQ(v.front(), 1.0);
 }
 
-// Тесты для метода back
 TEST(VectorTest, Back) {
 	Vector v = {1.0, 2.0, 3.0};
 	EXPECT_EQ(v.back(), 3.0);
@@ -92,7 +88,6 @@ TEST(VectorTest, BackConst) {
 	EXPECT_EQ(v.back(), 3.0);
 }
 
-// Тесты для метода data
 TEST(VectorTest, Data) {
 	Vector v = {1.0, 2.0, 3.0};
 	double* data = v.data();
@@ -109,7 +104,6 @@ TEST(VectorTest, DataConst) {
 	}
 }
 
-// Тесты для метода empty
 TEST(VectorTest, Empty) {
 	Vector v;
 	EXPECT_TRUE(v.empty());
@@ -122,7 +116,6 @@ TEST(VectorTest, EmptyConst) {
 	EXPECT_TRUE(v.empty());
 }
 
-// Тесты для метода size
 TEST(VectorTest, Size) {
 	Vector v = {1.0, 2.0, 3.0};
 	EXPECT_EQ(v.size(), 3);
@@ -135,14 +128,12 @@ TEST(VectorTest, SizeConst) {
 	EXPECT_EQ(v.size(), 3);
 }
 
-// Тесты для метода reserve
 TEST(VectorTest, Reserve) {
 	Vector v;
 	v.reserve(10);
 	EXPECT_GE(v.capacity(), 10);
 }
 
-// Тесты для метода capacity
 TEST(VectorTest, Capacity) {
 	Vector v;
 	EXPECT_EQ(v.capacity(), 0);
@@ -155,7 +146,6 @@ TEST(VectorTest, CapacityConst) {
 	EXPECT_EQ(v.capacity(), 0);
 }
 
-// Тесты для метода shrink_to_fit
 TEST(VectorTest, ShrinkToFit) {
 	Vector v = {1.0, 2.0, 3.0};
 	v.reserve(10);
@@ -164,8 +154,6 @@ TEST(VectorTest, ShrinkToFit) {
 	EXPECT_EQ(v.capacity(), v.size());
 }
 
-
-// Тесты для метода clear
 TEST(VectorTest, Clear) {
 	Vector v = {1.0, 2.0, 3.0};
 	v.clear();
@@ -173,8 +161,6 @@ TEST(VectorTest, Clear) {
 	EXPECT_GE(v.capacity(), 3);
 }
 
-
-// Тесты для метода insert
 TEST(VectorTest, Insert) {
 	Vector v = {1.0, 2.0, 3.0};
 	v.insert(1, 4.0);
@@ -185,8 +171,6 @@ TEST(VectorTest, Insert) {
 	EXPECT_EQ(v[3], 3.0);
 }
 
-
-// Тесты для метода erase
 TEST(VectorTest, Erase) {
 	Vector v = {1.0, 2.0, 3.0};
 	v.erase(1);
@@ -194,7 +178,7 @@ TEST(VectorTest, Erase) {
 	EXPECT_EQ(v[0], 1.0);
 	EXPECT_EQ(v[1], 3.0);
 }
-// Тесты для метода push_back
+
 TEST(VectorTest, PushBack) {
 	Vector v;
 	v.push_back(1.0);
@@ -206,7 +190,6 @@ TEST(VectorTest, PushBack) {
 	}
 }
 
-// Тесты для метода pop_back
 TEST(VectorTest, PopBack) {
 	Vector v = {1.0, 2.0, 3.0};
 	v.pop_back();
@@ -215,8 +198,6 @@ TEST(VectorTest, PopBack) {
 	EXPECT_EQ(v[1], 2.0);
 }
 
-
-// Тесты для метода resize
 TEST(VectorTest, Resize) {
 	Vector v = {1.0, 2.0, 3.0};
 	v.resize(5, 4.0);
@@ -228,7 +209,6 @@ TEST(VectorTest, Resize) {
 	EXPECT_EQ(v[4], 4.0);
 }
 
-// Тесты для операторов сравнения
 TEST(VectorTest, ComparisonOperators) {
 	Vector v1 = {1.0, 2.0, 3.0};
 	Vector v2 = {1.0, 2.0, 3.0};
@@ -281,7 +261,6 @@ TEST(VectorTest, ComparisonOperatorsConst) {
 	EXPECT_TRUE(v3 >= v1);
 }
 
-// Тесты для итераторов
 TEST(VectorTest, Iterators) {
 	Vector v = {1.0, 2.0, 3.0};
 	size_t i = 0;

@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
-
 #include "ex4.hpp"
 
-// Тест для оператора сложения
 TEST(ComplexTest, Addition) {
 	Complex a(1.0, 2.0);
 	Complex b(3.0, 4.0);
@@ -11,7 +9,6 @@ TEST(ComplexTest, Addition) {
 	EXPECT_DOUBLE_EQ(result.get_imaginary(), 6.0);
 }
 
-// Тест для оператора вычитания
 TEST(ComplexTest, Subtraction) {
 	Complex a(5.0, 3.0);
 	Complex b(2.0, 1.0);
@@ -20,7 +17,6 @@ TEST(ComplexTest, Subtraction) {
 	EXPECT_DOUBLE_EQ(result.get_imaginary(), 2.0);
 }
 
-// Тест для оператора умножения
 TEST(ComplexTest, Multiplication) {
 	Complex a(1.0, 2.0);
 	Complex b(3.0, 4.0);
@@ -29,7 +25,6 @@ TEST(ComplexTest, Multiplication) {
 	EXPECT_DOUBLE_EQ(result.get_imaginary(), 10.0);
 }
 
-// Тест для оператора деления
 TEST(ComplexTest, Division) {
 	Complex a(1.0, 2.0);
 	Complex b(3.0, 4.0);
@@ -38,14 +33,12 @@ TEST(ComplexTest, Division) {
 	EXPECT_DOUBLE_EQ(result.get_imaginary(), 0.08);
 }
 
-// Тест для оператора деления на ноль
 TEST(ComplexTest, DivisionByZero) {
 	Complex a(1.0, 2.0);
 	Complex b(0.0, 0.0);
 	EXPECT_THROW(a / b, std::invalid_argument);
 }
 
-// Тест для оператора присваивания сложения
 TEST(ComplexTest, AdditionAssignment) {
 	Complex a(1.0, 2.0);
 	Complex b(3.0, 4.0);
@@ -54,7 +47,6 @@ TEST(ComplexTest, AdditionAssignment) {
 	EXPECT_DOUBLE_EQ(a.get_imaginary(), 6.0);
 }
 
-// Тест для оператора присваивания вычитания
 TEST(ComplexTest, SubtractionAssignment) {
 	Complex a(5.0, 3.0);
 	Complex b(2.0, 1.0);
@@ -63,7 +55,6 @@ TEST(ComplexTest, SubtractionAssignment) {
 	EXPECT_DOUBLE_EQ(a.get_imaginary(), 2.0);
 }
 
-// Тест для оператора присваивания умножения
 TEST(ComplexTest, MultiplicationAssignment) {
 	Complex a(1.0, 2.0);
 	Complex b(3.0, 4.0);
@@ -72,7 +63,6 @@ TEST(ComplexTest, MultiplicationAssignment) {
 	EXPECT_DOUBLE_EQ(a.get_imaginary(), 10.0);
 }
 
-// Тест для оператора присваивания деления
 TEST(ComplexTest, DivisionAssignment) {
 	Complex a(1.0, 2.0);
 	Complex b(3.0, 4.0);
@@ -81,7 +71,6 @@ TEST(ComplexTest, DivisionAssignment) {
 	EXPECT_DOUBLE_EQ(a.get_imaginary(), 0.08);
 }
 
-// Тест для унарного минуса
 TEST(ComplexTest, UnaryMinus) {
 	Complex a(1.0, 2.0);
 	Complex result = -a;
@@ -89,14 +78,12 @@ TEST(ComplexTest, UnaryMinus) {
 	EXPECT_DOUBLE_EQ(result.get_imaginary(), -2.0);
 }
 
-// Тест для вычисления модуля
 TEST(ComplexTest, Absolute) {
 	Complex a(3.0, 4.0);
 	double result = a.absolute();
 	EXPECT_DOUBLE_EQ(result, 5.0);
 }
 
-// Тест для вычисления аргумента
 TEST(ComplexTest, Argument) {
 	Complex a(1.0, 1.0);
 	double result = a.argument();

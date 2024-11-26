@@ -83,7 +83,4 @@ uint8_t encoder::generate_key_stream(std::vector<uint8_t>& s_box, size_t& i, siz
 	std::swap(s_box[i], s_box[j]);
 	return s_box[(s_box[i] + s_box[j]) % 256];
 }
-std::vector<uint8_t> encoder::get() const {
-	return key;
-}
-
+std::vector<uint8_t> encoder::get() const { return key; }

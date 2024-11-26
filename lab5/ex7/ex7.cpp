@@ -119,7 +119,7 @@ BuildingMaterial::BuildingMaterial(const Product& product, const BuildingMateria
     : Product(product) {
 	flammability = buildingMaterial.flammability;
 }
-BuildingMaterial &BuildingMaterial::operator=(const BuildingMaterial& buildingMaterial) {
+BuildingMaterial& BuildingMaterial::operator=(const BuildingMaterial& buildingMaterial) {
 	if(this != &buildingMaterial){
 		Product{buildingMaterial};
 		flammability = buildingMaterial.flammability;
@@ -140,7 +140,7 @@ Warehouse& Warehouse::operator+=(Product& product) & {
 Warehouse& Warehouse::operator-=(size_t id) & {
 	std::map<size_t, Product*>::iterator f = products.find(id);
 	if (f != products.end()) {
-//		delete f->second;
+		//		delete f->second;
 		products.erase(f);
 	}
 	return *this;

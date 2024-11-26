@@ -1,26 +1,26 @@
 #include <gtest/gtest.h>
 #include "ex1.hpp"
 
-// Тестовый случай для конструктора по умолчанию
+
 TEST(BinaryIntTest, DefaultConstructor) {
 	binary_int b;
 	EXPECT_EQ(b.get_number(), 0);
 }
 
-// Тестовый случай для конструктора с параметром
+
 TEST(BinaryIntTest, ParameterizedConstructor) {
 	binary_int b(42);
 	EXPECT_EQ(b.get_number(), 42);
 }
 
-// Тестовый случай для оператора унарного минуса
+
 TEST(BinaryIntTest, UnaryMinus) {
 	binary_int b(42);
 	binary_int neg_b = -b;
 	EXPECT_EQ(neg_b.get_number(), -42);
 }
 
-// Тестовый случай для оператора сложения
+
 TEST(BinaryIntTest, Addition) {
 	binary_int b1(20);
 	binary_int b2(22);
@@ -28,7 +28,6 @@ TEST(BinaryIntTest, Addition) {
 	EXPECT_EQ(sum.get_number(), 42);
 }
 
-// Тестовый случай для оператора вычитания
 TEST(BinaryIntTest, Subtraction) {
 	binary_int b1(50);
 	binary_int b2(8);
@@ -36,7 +35,6 @@ TEST(BinaryIntTest, Subtraction) {
 	EXPECT_EQ(diff.get_number(), 42);
 }
 
-// Тестовый случай для оператора присваивания сложения
 TEST(BinaryIntTest, AdditionAssignment) {
 	binary_int b1(20);
 	binary_int b2(22);
@@ -44,7 +42,6 @@ TEST(BinaryIntTest, AdditionAssignment) {
 	EXPECT_EQ(b1.get_number(), 42);
 }
 
-// Тестовый случай для оператора присваивания вычитания
 TEST(BinaryIntTest, SubtractionAssignment) {
 	binary_int b1(50);
 	binary_int b2(8);
@@ -52,7 +49,6 @@ TEST(BinaryIntTest, SubtractionAssignment) {
 	EXPECT_EQ(b1.get_number(), 42);
 }
 
-// Тестовый случай для оператора присваивания умножения
 TEST(BinaryIntTest, MultiplicationAssignment) {
 	binary_int b1(6);
 	binary_int b2(7);
@@ -60,21 +56,18 @@ TEST(BinaryIntTest, MultiplicationAssignment) {
 	EXPECT_EQ(b1.get_number(), 42);
 }
 
-// Тестовый случай для префиксного инкремента
 TEST(BinaryIntTest, PrefixIncrement) {
 	binary_int b(41);
 	++b;
 	EXPECT_EQ(b.get_number(), 42);
 }
 
-// Тестовый случай для префиксного декремента
 TEST(BinaryIntTest, PrefixDecrement) {
 	binary_int b(43);
 	--b;
 	EXPECT_EQ(b.get_number(), 42);
 }
 
-// Тестовый случай для оператора сравнения "меньше"
 TEST(BinaryIntTest, LessThan) {
 	binary_int b1(41);
 	binary_int b2(42);
@@ -82,7 +75,6 @@ TEST(BinaryIntTest, LessThan) {
 	EXPECT_FALSE(b2 < b1);
 }
 
-// Тестовый случай для оператора умножения
 TEST(BinaryIntTest, Multiplication) {
 	binary_int b1(6);
 	binary_int b2(7);
@@ -90,7 +82,6 @@ TEST(BinaryIntTest, Multiplication) {
 	EXPECT_EQ(product.get_number(), 42);
 }
 
-// Тестовый случай для оператора сдвига влево
 TEST(BinaryIntTest, LeftShift) {
 	binary_int b(2);
 	binary_int shift(3);
@@ -98,7 +89,6 @@ TEST(BinaryIntTest, LeftShift) {
 	EXPECT_EQ(result.get_number(), 16);
 }
 
-// Тестовый случай для оператора сдвига вправо
 TEST(BinaryIntTest, RightShift) {
 	binary_int b(16);
 	binary_int shift(3);
@@ -106,7 +96,6 @@ TEST(BinaryIntTest, RightShift) {
 	EXPECT_EQ(result.get_number(), 2);
 }
 
-// Тестовый случай для оператора побитового И
 TEST(BinaryIntTest, BitwiseAnd) {
 	binary_int b1(6);  // 0110
 	binary_int b2(3);  // 0011
@@ -114,7 +103,6 @@ TEST(BinaryIntTest, BitwiseAnd) {
 	EXPECT_EQ(result.get_number(), 2);  // 0010
 }
 
-// Тестовый случай для метода to_parts
 TEST(BinaryIntTest, ToParts) {
 	binary_int b(0x12345678);
 	auto parts = b.to_parts();
@@ -122,7 +110,6 @@ TEST(BinaryIntTest, ToParts) {
 	EXPECT_EQ(parts.second.get_number(), 0x00005678);
 }
 
-// Тестовый случай для постфиксного инкремента
 TEST(BinaryIntTest, PostfixIncrement) {
 	binary_int b(41);
 	binary_int result = b++;
@@ -130,7 +117,6 @@ TEST(BinaryIntTest, PostfixIncrement) {
 	EXPECT_EQ(b.get_number(), 42);
 }
 
-// Тестовый случай для постфиксного декремента
 TEST(BinaryIntTest, PostfixDecrement) {
 	binary_int b(43);
 	binary_int result = b--;

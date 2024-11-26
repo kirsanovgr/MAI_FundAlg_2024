@@ -1,10 +1,7 @@
 #include <gtest/gtest.h>
-
 #include <ctime>
-
 #include "ex7.hpp"
 
-// Тесты для класса Product
 TEST(ProductTest, Constructor) {
 	Product product("Test Product", 1, 1.0, 10.0, 30);
 	EXPECT_EQ(product.get_name(), "Test Product");
@@ -37,7 +34,6 @@ TEST(ProductTest, CalculateStorageFee) {
 	EXPECT_EQ(product.calculateStorageFee(), 1.0 * DEFAULT_PRICE_PRODUCT_PLACE);
 }
 
-// Тесты для класса PerishableProduct
 TEST(PerishableProductTest, Constructor) {
 	time_t expirationDate = time(0) + 7 * 24 * 60 * 60;
 	PerishableProduct product("Perishable Product", 1, 1.0, 10.0, 30, expirationDate);
@@ -56,7 +52,6 @@ TEST(PerishableProductTest, CalculateStorageFee) {
 	EXPECT_EQ(product.calculateStorageFee(), expectedFee);
 }
 
-// Тесты для класса ElectronicProduct
 TEST(ElectronicProductTest, Constructor) {
 	ElectronicProduct product("Electronic Product", 1, 1.0, 10.0, 30, 12, 65);
 	EXPECT_EQ(product.get_name(), "Electronic Product");
@@ -65,7 +60,6 @@ TEST(ElectronicProductTest, Constructor) {
 	EXPECT_EQ(product.get_price(), 10.0);
 }
 
-// Тесты для класса BuildingMaterial
 TEST(BuildingMaterialTest, Constructor) {
 	BuildingMaterial product("Building Material", 1, 1.0, 10.0, 30, 1.5);
 	EXPECT_EQ(product.get_name(), "Building Material");
@@ -79,7 +73,6 @@ TEST(BuildingMaterialTest, CalculateStorageFee) {
 	EXPECT_EQ(product.calculateStorageFee(), 1.0 * DEFAULT_PRICE_PRODUCT_PLACE * 1.5);
 }
 
-// Тесты для класса Warehouse
 TEST(WarehouseTest, AddProduct) {
 	Warehouse warehouse;
 	PerishableProduct product("Perishable Product", 1, 1.0, 10.0, 30, time(0) + 7 * 24 * 60 * 60);
