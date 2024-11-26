@@ -3,7 +3,7 @@
 #include "ex6.h"
 Vector::Vector(const size_t n, const double default_value) : _size(n), _capacity(n){
 	_data = new double[n];
-	for (int i = 0; i < n; ++i) {
+	for (size_t i = 0; i < n; ++i) {
 		_data[i] = default_value;
 	}
 }
@@ -102,7 +102,7 @@ bool Vector::operator==(const Vector &other) const {
 	if (other.size() != size()) {
 		return false;
 	}
-	for (int i = 0; i < size(); ++i) {
+	for (size_t i = 0; i < size(); ++i) {
 		if (data()[i] != other[i]) {
 			return false;
 		}
@@ -117,7 +117,7 @@ std::weak_ordering Vector::operator<=>(const Vector &other) const {
 			return std::weak_ordering::greater;
 		}
 	}
-	for (int i = 0; i < size(); ++i) {
+	for (size_t i = 0; i < size(); ++i) {
 		if (data()[i] != other[i]) {
 			if (data()[i] > other[i]) {
 				return std::weak_ordering::greater;
@@ -130,7 +130,7 @@ std::weak_ordering Vector::operator<=>(const Vector &other) const {
 }
 
 std::ostream &operator<<(std::ostream &ostream, const Vector &vector) {
-	for (int i = 0; i < vector.size(); ++i) {
+	for (size_t i = 0; i < vector.size(); ++i) {
 		ostream << vector[i] << " ";
 	}
 	return ostream;

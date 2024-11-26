@@ -119,7 +119,7 @@ BuildingMaterial::BuildingMaterial(const Product& product, const BuildingMateria
     : Product(product) {
 	flammability = buildingMaterial.flammability;
 }
-BuildingMaterial BuildingMaterial::operator=(const BuildingMaterial& buildingMaterial) {
+BuildingMaterial &BuildingMaterial::operator=(const BuildingMaterial& buildingMaterial) {
 	if(this != &buildingMaterial){
 		Product{buildingMaterial};
 		flammability = buildingMaterial.flammability;
@@ -127,27 +127,11 @@ BuildingMaterial BuildingMaterial::operator=(const BuildingMaterial& buildingMat
 	return *this;
 }
 
-Warehouse& Warehouse::operator+=(const ElectronicProduct& product) & {
+Warehouse& Warehouse::operator+=(Product& product) & {
 	if (products.find(product.get_id()) != products.end()) {
 		throw repeated_id();
 	}
-	products[product.get_id()] = new ElectronicProduct{product};
-	return *this;
-}
-
-Warehouse& Warehouse::operator+=(const PerishableProduct& product) & {
-	if (products.find(product.get_id()) != products.end()) {
-		throw repeated_id();
-	}
-	products[product.get_id()] = new PerishableProduct{product};
-	return *this;
-}
-
-Warehouse& Warehouse::operator+=(const BuildingMaterial& product) & {
-	if (products.find(product.get_id()) != products.end()) {
-		throw repeated_id();
-	}
-	products[product.get_id()] = new BuildingMaterial{product};
+	products[product.get_id()] = &product;
 	return *this;
 }
 
@@ -156,7 +140,7 @@ Warehouse& Warehouse::operator+=(const BuildingMaterial& product) & {
 Warehouse& Warehouse::operator-=(size_t id) & {
 	std::map<size_t, Product*>::iterator f = products.find(id);
 	if (f != products.end()) {
-		delete f->second;
+//		delete f->second;
 		products.erase(f);
 	}
 	return *this;
@@ -224,9 +208,4 @@ void Warehouse::displayInventory() const {
 }
 std::map<size_t, Product*> Warehouse::get_products() const {
 	return products;
-}
-Warehouse::~Warehouse() {
-	for(const std::pair <size_t, Product*> &el : products){
-		delete el.second;
-	}
 }
