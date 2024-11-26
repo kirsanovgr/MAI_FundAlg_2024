@@ -1,6 +1,8 @@
-#include "ex6.h"
 #include <gtest/gtest.h>
+
 #include <stdexcept>
+
+#include "ex6.hpp"
 
 // Тесты для конструкторов
 TEST(VectorTest, DefaultConstructor) {
@@ -53,7 +55,7 @@ TEST(VectorTest, At) {
 	EXPECT_EQ(v.at(0), 1.0);
 	EXPECT_EQ(v.at(1), 2.0);
 	EXPECT_EQ(v.at(2), 3.0);
-	EXPECT_THROW(v.at(3), incorrect_index);
+	EXPECT_THROW(v.at(3), std::range_error);
 }
 
 TEST(VectorTest, AtConst) {
@@ -61,7 +63,7 @@ TEST(VectorTest, AtConst) {
 	EXPECT_EQ(v.at(0), 1.0);
 	EXPECT_EQ(v.at(1), 2.0);
 	EXPECT_EQ(v.at(2), 3.0);
-	EXPECT_THROW(v.at(3), incorrect_index);
+	EXPECT_THROW(v.at(3), std::range_error);
 }
 
 // Тесты для метода front
@@ -291,7 +293,7 @@ TEST(VectorTest, Iterators) {
 TEST(VectorTest, IteratorsConst) {
 	const Vector v = {1.0, 2.0, 3.0};
 	size_t i = 0;
-	for (auto it = v.begin(); it != v.end(); ++it) {
+	for (auto it = v.cbegin(); it != v.cend(); ++it) {
 		EXPECT_EQ(*it, v[i++]);
 	}
 }

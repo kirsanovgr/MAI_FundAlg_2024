@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_ex1.dir/ex1/binary_int_test.cpp.o CMakeFiles/test_ex1.dir/ex1/ex1.cpp.o -o test_ex1  /usr/lib/x86_64-linux-gnu/libgtest.a -lpthread 

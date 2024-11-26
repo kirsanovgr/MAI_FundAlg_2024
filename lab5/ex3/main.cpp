@@ -1,4 +1,4 @@
-#include "ex3.h"
+#include "ex3.hpp"
 int main(){
 	logical_values_array a(28);
 	logical_values_array b(13);

@@ -1,5 +1,5 @@
 
-#include "ex4.h"
+#include "ex4.hpp"
 Complex Complex::operator+(const Complex& second) const {
 	return Complex{real + second.get_real(), imaginary + second.get_imaginary()};
 }
@@ -13,7 +13,7 @@ Complex Complex::operator*(const Complex& second) const {
 
 Complex Complex::operator/(const Complex& second) const {
 	if (std::fabs(second.absolute()) < 1e-20) {
-		throw div_by_null();
+		throw std::invalid_argument("div by null");
 	}
 	return Complex{(real * second.get_real() + imaginary * second.get_imaginary()) /
 	                   (second.get_real() * second.get_real() + second.get_imaginary() * second.get_imaginary()),

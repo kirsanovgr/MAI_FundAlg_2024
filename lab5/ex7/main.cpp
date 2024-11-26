@@ -1,5 +1,4 @@
-#include "ex7.h"
-
+#include "ex7.hpp"
 
 int main(){
 	Warehouse warehouse;

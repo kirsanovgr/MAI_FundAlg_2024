@@ -1,6 +1,8 @@
-#include "ex7.h"
 #include <gtest/gtest.h>
+
 #include <ctime>
+
+#include "ex7.hpp"
 
 // Тесты для класса Product
 TEST(ProductTest, Constructor) {

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include "ex4.h"
+
+#include "ex4.hpp"
 
 // Тест для оператора сложения
 TEST(ComplexTest, Addition) {
@@ -41,7 +42,7 @@ TEST(ComplexTest, Division) {
 TEST(ComplexTest, DivisionByZero) {
 	Complex a(1.0, 2.0);
 	Complex b(0.0, 0.0);
-	EXPECT_THROW(a / b, div_by_null);
+	EXPECT_THROW(a / b, std::invalid_argument);
 }
 
 // Тест для оператора присваивания сложения

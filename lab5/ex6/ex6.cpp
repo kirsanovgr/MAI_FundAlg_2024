@@ -1,6 +1,6 @@
 
 
-#include "ex6.h"
+#include "ex6.hpp"
 Vector::Vector(const size_t n, const double default_value) : _size(n), _capacity(n){
 	_data = new double[n];
 	for (size_t i = 0; i < n; ++i) {
@@ -18,13 +18,13 @@ double &Vector::operator[](size_t index) { return _data[index]; }
 const double &Vector::operator[](size_t index) const { return _data[index]; }
 double &Vector::at(size_t index) {
 	if (index >= _size) {
-		throw incorrect_index();
+		throw std::range_error("Incorrect index");
 	}
 	return _data[index];
 }
 const double &Vector::at(size_t index) const {
 	if (index >= _size) {
-		throw incorrect_index();
+		throw std::range_error("Incorrect index");
 	}
 	return _data[index];
 }
@@ -72,7 +72,7 @@ void Vector::insert(size_t index, double elem) {
 }
 void Vector::erase(size_t index) {
 	if (index >= _size) {
-		throw incorrect_index();
+		throw std::range_error("Incorrect index");
 	}
 
 	for (size_t i = index + 1; i < _size; ++i) {
@@ -83,7 +83,7 @@ void Vector::erase(size_t index) {
 void Vector::push_back(double el) { insert(_size, el); }
 void Vector::pop_back() {
 	if (_size == 0) {
-		throw incorrect_index();
+		throw std::range_error("Incorrect index");
 	}
 	_size -= 1;
 }
@@ -198,9 +198,9 @@ Vector::Iterator Vector::begin() { return Vector::Iterator{_data}; }
 
 Vector::Iterator Vector::end() { return Vector::Iterator{_data + _size}; }
 
-const Vector::Iterator Vector::begin() const { return Vector::Iterator{_data}; }
+Vector::Iterator Vector::cbegin() const { return Vector::Iterator{_data}; }
 
-const Vector::Iterator Vector::end() const { return Vector::Iterator{_data + _size}; }
+Vector::Iterator Vector::cend() const { return Vector::Iterator{_data + _size}; }
 
 bool Vector::empty() const { return _size == 0; }
 
@@ -238,3 +238,4 @@ bool Vector::Iterator::operator<=(const Vector::Iterator &other) const {
 bool Vector::Iterator::operator>=(const Vector::Iterator &other) const {
 	return (*this <=> other) == std::weak_ordering::greater || (*this <=> other) == std::weak_ordering::equivalent;
 }
+

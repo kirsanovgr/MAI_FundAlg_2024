@@ -1,7 +1,6 @@
-#include "ex6.h"
-
-
 #include <vector>
+
+#include "ex6.hpp"
 int main(){
 	std::vector<double> b = {1, 2, 3};
 	Vector a(12, 23);

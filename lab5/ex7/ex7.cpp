@@ -1,4 +1,4 @@
-#include "ex7.h"
+#include "ex7.hpp"
 
 void Product::is_correct_product() const {
 	if (name.empty() or weight <= 0 or price < 0) {

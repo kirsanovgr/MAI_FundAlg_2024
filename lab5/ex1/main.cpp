@@ -1,5 +1,6 @@
-#include "ex1.h"
 #include <iostream>
+
+#include "ex1.hpp"
 
 void test_addition() {
 	std::cout << "Testing addition:" << std::endl;

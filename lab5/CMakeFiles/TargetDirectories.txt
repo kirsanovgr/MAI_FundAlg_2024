@@ -1,0 +1,13 @@
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/ex1.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/ex2.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/ex3.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/ex4.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/test_ex3.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/test_ex4.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/ex6.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/test_ex6.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/ex7.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/test_ex7.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/test_ex1.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/edit_cache.dir
+/home/matvey/Unik/labs_C/sem3/FundAlg/lab5/CMakeFiles/rebuild_cache.dir

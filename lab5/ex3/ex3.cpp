@@ -1,5 +1,5 @@
 
-#include "ex3.h"
+#include "ex3.hpp"
 unsigned int logical_values_array::get_value() const { return value; }
 bool logical_values_array::equals(const logical_values_array& first, const logical_values_array& second) {
 	return second.get_value() == first.get_value();
@@ -13,7 +13,7 @@ void logical_values_array::to_char_arr(char* result) const {
 }
 bool logical_values_array::get_bit(unsigned int index) const {
 	if (index >= sizeof(unsigned int) * 8) {
-		throw incorrect_index_array();
+		throw std::range_error("incorrect index");
 	}
 	return (value & (1 << (sizeof(unsigned int) * 8 - index - 1)));
 }

@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
-#include "ex3.h"
+
+#include "ex3.hpp"
+
 
 // Тест для метода get_value
 TEST(LogicalValuesArrayTest, GetValue) {
@@ -35,7 +37,7 @@ TEST(LogicalValuesArrayTest, GetBit) {
 	EXPECT_TRUE(lva.get_bit(29));
 	EXPECT_TRUE(lva.get_bit(30));
 	EXPECT_TRUE(lva.get_bit(31));
-	EXPECT_THROW(lva.get_bit(32), incorrect_index_array);
+	EXPECT_THROW(lva.get_bit(32), std::range_error);
 }
 
 // Тест для оператора ~ (инверсия)
