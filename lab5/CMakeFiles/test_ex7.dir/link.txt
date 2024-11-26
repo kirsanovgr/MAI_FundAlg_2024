@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/test_ex7.dir/ex7/test_ex7.cpp.o CMakeFiles/test_ex7.dir/ex7/ex7.cpp.o -o test_ex7  /usr/lib/x86_64-linux-gnu/libgtest.a -lpthread 

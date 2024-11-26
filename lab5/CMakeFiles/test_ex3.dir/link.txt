@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/test_ex3.dir/ex3/test_logical_values_array.cpp.o CMakeFiles/test_ex3.dir/ex3/ex3.cpp.o -o test_ex3  /usr/lib/x86_64-linux-gnu/libgtest.a -lpthread 
