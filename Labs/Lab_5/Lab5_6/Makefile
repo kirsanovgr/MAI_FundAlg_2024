@@ -1,5 +1,29 @@
-FLAGS = -Wall -Wextra -Werror -g -lm
-COMP = g++
+# Название исполняемого файла
+TARGET = vector_test
 
-Lab5_6: 6.cpp
-	$(COMP) $(FLAGS) 6.cpp main.cpp -lcheck -lsubunit -lrt -lm -lpthread -o 6.a
+# Компилятор и флаги
+CC = g++
+CFLAGS = -std=c++17 -Wall -Wextra -Werror -pedantic
+
+# Файлы проекта
+SRCS = main.cpp 6.cpp
+OBJS = $(SRCS:.cpp=.o)
+
+# Цель по умолчанию
+all: $(TARGET)
+
+# Компиляция исполняемого файла
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+# Компиляция объектных файлов
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Очистка временных файлов
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+# Полная очистка
+distclean: clean
+	rm -f *.txt

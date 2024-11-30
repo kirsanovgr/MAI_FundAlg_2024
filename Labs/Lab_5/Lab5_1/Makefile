@@ -1,5 +1,29 @@
-FLAGS = -Wall -Wextra -Werror -g -lm
-COMP = g++
+# Название исполняемого файла
+TARGET = main
 
-Lab5_1: 1.cpp
-	$(COMP) $(FLAGS) 1.cpp -lcheck -lsubunit -lrt -lm -lpthread -o 1.a
+# Компилятор и флаги
+CC = g++
+CFLAGS = -std=c++17 -Wall -Wextra -Werror -pedantic
+
+# Файлы проекта
+SRCS = main.cpp 1.cpp
+OBJS = $(SRCS:.cpp=.o)
+
+# Цель по умолчанию
+all: $(TARGET)
+
+# Компиляция исполняемого файла
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+# Компиляция объектных файлов
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Очистка временных файлов
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+# Полная очистка
+distclean: clean
+	rm -f output.txt

@@ -1,11 +1,17 @@
 #include "func.h"
 
+// Глобальные переменные
+Macro **hashtable = NULL;
+unsigned int HASHSIZE = INITIAL_HASHSIZE;
+unsigned int macro_count = 0;
+
+// Реализация хеш-функции
 unsigned int hash(const char *str) {
     unsigned long hash = 0;
     while (*str) {
         char c = *str++;
-        
         int value;
+
         if (c >= '0' && c <= '9') {
             value = c - '0';
         } else if (c >= 'A' && c <= 'Z') {
@@ -21,7 +27,47 @@ unsigned int hash(const char *str) {
     return hash % HASHSIZE;
 }
 
+char *strdup(const char *str) {
+	size_t len = strlen(str) + 1; // Длина строки + символ окончания
+	char *copy = malloc(len);    // Выделение памяти
+	if (copy) {
+		memcpy(copy, str, len);  // Копирование строки
+	}
+	return copy;
+}
+
+// Функция для перераспределения хеш-таблицы
+void rehash(unsigned int new_size) {
+    Macro **new_table = (Macro **)calloc(new_size, sizeof(Macro *));
+    if (!new_table) {
+        fprintf(stderr, "Ошибка выделения памяти для новой таблицы.\n");
+        return;
+    }
+
+    for (unsigned int i = 0; i < HASHSIZE; i++) {
+        Macro *macro = hashtable[i];
+        while (macro) {
+            Macro *next = macro->next;
+            unsigned int new_index = hash(macro->name) % new_size;
+
+            macro->next = new_table[new_index];
+            new_table[new_index] = macro;
+
+            macro = next;
+        }
+    }
+
+    free(hashtable);
+    hashtable = new_table;
+    HASHSIZE = new_size;
+}
+
+// Добавление макроса
 int add_macro(const char *name, const char *value) {
+    if ((double)macro_count / HASHSIZE > 0.75) {
+        rehash(HASHSIZE * 2);
+    }
+
     unsigned int index = hash(name);
     Macro *new_macro = (Macro *)malloc(sizeof(Macro));
     if (!new_macro) {
@@ -33,11 +79,12 @@ int add_macro(const char *name, const char *value) {
     new_macro->next = hashtable[index];
     hashtable[index] = new_macro;
 
+    macro_count++;
     return SUCCESS;
 }
 
-// поиск макроса по имени
-const char* find_macro(const char *name) {
+// Поиск макроса по имени
+const char *find_macro(const char *name) {
     unsigned int index = hash(name);
     Macro *macro = hashtable[index];
     while (macro) {
@@ -49,8 +96,9 @@ const char* find_macro(const char *name) {
     return NULL;
 }
 
+// Освобождение памяти хеш-таблицы
 void free_hashtable() {
-    for (int i = 0; i < HASHSIZE; i++) {
+    for (unsigned int i = 0; i < HASHSIZE; i++) {
         Macro *macro = hashtable[i];
         while (macro) {
             Macro *temp = macro;
@@ -61,9 +109,12 @@ void free_hashtable() {
         }
         hashtable[i] = NULL;
     }
+    free(hashtable);
+    hashtable = NULL;
+    macro_count = 0;
 }
 
-// для обработки файла и замены макросов в тексте
+// Обработка файла и замена макросов
 int process_file(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -76,7 +127,6 @@ int process_file(const char *filename) {
 
     while (fgets(line, sizeof(line), file)) {
         if (reading_defines && strncmp(line, "#define", 7) == 0) {
-            // Обработка define
             char name[256], value[256];
             if (sscanf(line, "#define %255s %255[^\n]", name, value) == 2) {
                 if (add_macro(name, value) != 0) {
@@ -86,35 +136,28 @@ int process_file(const char *filename) {
                 }
             }
         } else {
-            // Переход к основной части текста
             reading_defines = 0;
-
-            // Обработка строки с заменой макросов
             char *start = line;
+
             while (*start) {
-                // Находим конец текущего слова
                 char *end = start;
                 while (*end && !isspace(*end) && *end != ',' && *end != '.' && *end != '!' && *end != '?') {
                     end++;
                 }
 
-                // Временное сохранение символа
                 char temp = *end;
                 *end = '\0';
 
-                // Ищем макрос в таблице
                 const char *replacement = find_macro(start);
                 if (replacement) {
-                    printf("%s", replacement);  // Выводим только значение макроса
+                    printf("%s", replacement);
                 } else {
-                    printf("%s", start);  // Выводим слово, если оно не является макросом
+                    printf("%s", start);
                 }
 
-                // Восстанавливаем символ и двигаемся дальше
                 *end = temp;
                 start = end;
 
-                // Печатаем разделительный символ (например, пробел или пунктуацию)
                 if (*start && isspace(*start)) {
                     printf(" ");
                     start++;
@@ -131,15 +174,37 @@ int process_file(const char *filename) {
     return SUCCESS;
 }
 
+// Тестирование
+void run_tests() {
+    printf("Тесты:\n");
+
+    add_macro("PI", "3.14");
+    add_macro("E", "2.71");
+    printf("PI = %s\n", find_macro("PI"));
+    printf("E = %s\n", find_macro("E"));
+
+    rehash(256);
+    printf("После рехэша: PI = %s\n", find_macro("PI"));
+    printf("После рехэша: E = %s\n", find_macro("E"));
+}
+
+// Точка входа
 int main(int argc, char *argv[]) {
+    hashtable = (Macro **)calloc(INITIAL_HASHSIZE, sizeof(Macro *));
+    if (!hashtable) {
+        fprintf(stderr, "Ошибка выделения памяти для хеш-таблицы.\n");
+        return ERROR_MEMORY;
+    }
+
     if (argc != 2) {
-        fprintf(stderr, "Ввод: %s <файл>\n", argv[0]);
+        fprintf(stderr, "Использование: %s <файл>\n", argv[0]);
+        free_hashtable();
         return INCORRECT_OPTIONS;
     }
 
-    if (process_file(argv[1]) != 0) {
+    if (process_file(argv[1]) != SUCCESS) {
         free_hashtable();
-        return INCORRECT_OPTIONS;
+        return ERROR_WITH_MACROS;
     }
 
     free_hashtable();

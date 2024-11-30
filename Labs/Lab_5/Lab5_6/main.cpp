@@ -1,5 +1,5 @@
 #include <iostream>
-#include "6.cpp"
+#include "6.hpp"
 
 int main() {
     vector v1(5, 1.0); // Вектор из 5 элементов со значением 1.0
