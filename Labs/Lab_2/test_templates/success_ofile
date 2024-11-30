@@ -1,0 +1,9 @@
+if [ $# -ne 2 ]
+then
+    echo "Incorrect test usage. Expected <exec file with args> <file with console output messages>"
+    exit 1
+fi
+
+"${BASH_SOURCE%/*}"/template_output_file "$1" "0" "$2"
+
+exit $?

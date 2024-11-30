@@ -1,0 +1,4 @@
+Smith Johnathan Doe 15.03.1990 M 3500.00
+Smith Johnathan Doe 15.03.1990 M 2000.00
+Smith John Doe 15.03.1990 M 1500.00
+Doe Ivan 23.05.1985 W 1 500.00

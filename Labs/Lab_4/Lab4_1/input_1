@@ -1,0 +1,8 @@
+#define GREETING Добро пожаловать
+#define SIGNATURE Ваша команда разработки
+#define URL https://example.com
+
+GREETING на наш сайт!
+За дополнительной информацией обратитесь по адресу: URL
+С наилучшими пожеланиями,
+SIGNATURE
