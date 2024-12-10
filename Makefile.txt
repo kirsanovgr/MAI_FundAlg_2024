@@ -1,5 +1,5 @@
 FLAGS = -Wall -Wextra -Werror -g -lm
 COMP = gcc
 
-Lab3_2: 2.c
-	$(COMP) 2.c -lcheck -lsubunit -lrt -lm -lpthread -lm -o 2.a
+Lab2_5: 2.c
+	$(COMP) 5.c -lcheck -lsubunit -lrt -lm -lpthread -lm -o 5.a
