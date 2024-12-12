@@ -74,12 +74,28 @@ int string_compare(const char *s1, const char*s2){
 	return s1[i] - s2[i];
 }
 
-
-int strtoint(const char * a){
+int str_to_int(const char *a) {
 	int sum = 0;
 	while (*a){
 		sum *= 10 + (*a - '0');
 		a++;
 	}
 	return sum;
+}
+
+void u_long_to_s(size_t num, char *s) {
+	size_t i = 0;
+	while (num > 0) {
+		size_t d = num % 10;
+		s[i] = (char)(d + '0');
+		num = num / 10;
+		i++;
+	}
+
+	for (size_t j = 0; j < i / 2; ++j) {
+		char t = s[j];
+		s[j] = s[i - j - 1];
+		s[i - j - 1] = t;
+	}
+	s[i] = '\0';
 }

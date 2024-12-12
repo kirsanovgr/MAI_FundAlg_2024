@@ -32,10 +32,15 @@ error_msg string_to_int(String* dst, int* res);
 void string_to_upper(String* string);
 int find_index_string_with_start_index(String* s, char c, int start_index);
 void strip(String* string);
+error_msg reverse_string(String * string);
+error_msg u_long_to_str(size_t x, String * s);
+error_msg string_to_u_long(String* src, size_t* res);
+error_msg string_to_double(String* src, double* res);
 
 
 int read_string_before_separator(FILE* stream, String* string, char separator);
 int read_string(FILE* stream, String* string);
+error_msg safe_read_string(FILE* stream, String* string);
 int read_line(FILE* stream, String* string);
 
 void clear_string(String* string);

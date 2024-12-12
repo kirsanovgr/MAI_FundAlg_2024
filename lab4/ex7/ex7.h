@@ -1,6 +1,4 @@
-
-#ifndef LAB4_EX7_H
-#define LAB4_EX7_H
+#pragma once
 
 #include "../lib2/SystemErrors2/errors.h"
 #include "../lib2/vector/charvector.h"
@@ -53,4 +51,3 @@ Operation what_operation(String* instruction);
 
 error_msg equate(ArrayOfMemoryCell* arrayOfMemoryCell, String* instruction, MemoryCell* memoryCell, int index_eq);
 
-#endif  // LAB4_EX7_H

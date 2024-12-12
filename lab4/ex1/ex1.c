@@ -510,3 +510,5 @@ error_msg read_instruction(FILE *stream, String *result) {
 	destroy_string(&tmp);
 	return SUCCESS;
 }
+
+

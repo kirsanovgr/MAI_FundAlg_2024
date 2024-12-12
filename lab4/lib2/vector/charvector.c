@@ -26,7 +26,7 @@ error_msg mstrcopy(const String* dest, String* result, int start, int end) {
 }
 
 error_msg resize_string(String* vector, int new_capacity) {
-	if (vector->capacity < new_capacity) {
+	if (vector->capacity <= new_capacity) {
 		char* tmp = (char*)realloc(vector->arr, sizeof(char) * new_capacity);
 		if (!tmp) {
 			return (error_msg ){MEMORY_ALLOCATED_ERROR, "resize_string", "memory allocated error"};
@@ -34,13 +34,15 @@ error_msg resize_string(String* vector, int new_capacity) {
 		vector->arr = tmp;
 		vector->capacity = new_capacity;
 	}
-	return (error_msg ){SUCCESS, "", ""};
+	return (error_msg){SUCCESS, "", ""};
 }
 
 error_msg push_end_string(String* vector, char new_element) {
-	if (vector->size >= vector->capacity - 1) {
+	if (vector->size >= vector->capacity - 2) {
 		error_msg error = resize_string(vector, vector->capacity * 2);
-		if (error.type) return error;
+		if (error.type) {
+			return error;
+		}
 	}
 	vector->size += 1;
 	vector->arr[vector->size - 1] = new_element;
@@ -138,17 +140,41 @@ error_msg string_to_int(String* dst, int* res) {
 int read_string(FILE* stream, String* string) {
 	if (!stream) return 0;
 	int count_read_symbol = 0;
-	char c;
-	while (((c = getc(stream)) != EOF) && (c == ' ' || c == '\t'));
+	int c;
+	while (((c = getc(stream)) != EOF) && ((char)c == ' ' || (char)c == '\t'))
+		;
 	do {
-		if (c == '\n' || c == '\t' || c == ' ' || c == EOF) {
+		if ((char)c == '\n' || (char)c == '\t' || (char)c == ' ' || c == EOF) {
 			return count_read_symbol;
 		}
 		count_read_symbol++;
-		error_msg errorMsg = push_end_string(string, c);
-		if (errorMsg.type) return count_read_symbol;
+		error_msg errorMsg = push_end_string(string, (char)c);
+		if (errorMsg.type == MEMORY_ALLOCATED_ERROR) {
+			return -1;
+		}
 	} while ((c = getc(stream)) != EOF);
 	return count_read_symbol;
+}
+
+error_msg safe_read_string(FILE* stream, String* string) {
+	if (!stream) {
+		return (error_msg){INPUT_FILE_ERROR, "safe_read_string", "input file didn't open"};
+	}
+	int count_read_symbol = 0;
+	int c;
+	while (((c = getc(stream)) != EOF) && ((char)c == ' ' || (char)c == '\t'))
+		;
+	do {
+		if ((char)c == '\n' || (char)c == '\t' || (char)c == ' ' || c == EOF) {
+			break;
+		}
+		count_read_symbol++;
+		error_msg errorMsg = push_end_string(string, (char)c);
+		if (errorMsg.type) {
+			return errorMsg;
+		}
+	} while ((c = getc(stream)) != EOF);
+	return (error_msg){SUCCESS, "", ""};
 }
 
 int read_line(FILE* stream, String* string) {
@@ -247,4 +273,78 @@ void strip(String* string) {
 			break;
 		}
 	}
+}
+
+error_msg reverse_string(String* string) {
+	if (string == NULL) {
+		return (error_msg){INCORRECT_ARG_FUNCTION, "reverse", "get pointer to null"};
+	}
+	for (int i = 0; i < string->size / 2; ++i) {
+		char tmp = string->arr[i];
+		string->arr[i] = string->arr[string->size - i - 1];
+		string->arr[string->size - i - 1] = tmp;
+	}
+	return (error_msg){SUCCESS, "", ""};
+}
+
+error_msg u_long_to_str(size_t x, String* s) {
+	if (s == NULL) {
+		return (error_msg){INCORRECT_ARG_FUNCTION, "u_long_to_s", "get pointer to null"};
+	}
+	error_msg errorMsg;
+	while (x > 0) {
+		size_t d = x % 10;
+		x = x / 10;
+		errorMsg = push_end_string(s, (char)(d + '0'));
+		if (errorMsg.type) {
+			return errorMsg;
+		}
+	}
+	errorMsg = reverse_string(s);
+	return errorMsg;
+}
+
+error_msg string_to_u_long(String* src, size_t* res) {
+	*res = 0;
+	for (int i = 0; i < src->size; ++i) {
+		if (src->arr[i] >= '0' && src->arr[i] <= '9') {
+			size_t prev = *res;
+			*res = (*res) * 10 + (src->arr[i] - '0');
+			if (*res < (prev * 10) || *res < (size_t)(src->arr[i] - '0')) {
+				return (error_msg){OVERFLOW_ERROR, "string_to_int", "overflow error"};
+			}
+		} else {
+			return (error_msg){INCORRECT_OPTIONS_ERROR, "string_to_int", "incorrect data"};
+		}
+	}
+
+	return (error_msg){SUCCESS, "", ""};
+}
+
+error_msg string_to_double(String* src, double* res) {
+	int k = -1;
+	int fl = 0;
+	long int number = 0;
+	for (int j = 0; src->arr[j] != '\0'; ++j) {
+		if (src->arr[j] == '-' && fl == 0)
+			fl = 1;
+		else if (src->arr[j] >= '0' && src->arr[j] <= '9') {
+			number *= 10;
+			number += (src->arr[j] - '0');
+			if (number < 0) {
+				return (error_msg){OVERFLOW_ERROR, "string_to_double", "overflow error"};
+			}
+			if (k != -1) k += 1;
+		} else if (src->arr[j] == '.' && k == -1)
+			k = 0;
+		else {
+			return (error_msg){INCORRECT_OPTIONS_ERROR, "string_to_double", "unrecognized symbol"};
+		}
+	}
+	double num = (double)number;
+	for (int k_null = 0; k_null < k; ++k_null) num /= 10.0;
+	k = -1;
+	if (fl) num *= -1;
+	*res = num;
+	return (error_msg){SUCCESS, "", ""};
 }

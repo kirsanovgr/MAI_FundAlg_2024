@@ -14,7 +14,8 @@ typedef enum type_error{
     OVERFLOW_ERROR,
     INCORRECT_OPTIONS_ERROR,
     UNRECOGNIZED_CHARACTER_ERROR,
-	NUMERAL_SYSTEM_ERROR
+	NUMERAL_SYSTEM_ERROR,
+	INCORRECT_ARG_FUNCTION
 } type_error;
 
 typedef struct error_msg{

@@ -5,6 +5,6 @@ myvar=ccc;
 print myvar;
 bg=     ccc          *                 myvar;
 
-BG = bg / 6;
+BG = bg / 2;
 BGG = BG % 7;
 print;

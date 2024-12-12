@@ -1,5 +1,4 @@
-#ifndef LAB4_EX1_H
-#define LAB4_EX1_H
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,5 +55,3 @@ error_msg renew_hash_table_with_new_size(const HashTable *dst, HashTable *src);
 void destroy_hash_table(HashTable *hashTable);
 
 error_msg read_instruction(FILE *stream, String *result);
-
-#endif  // LAB4_EX1_H

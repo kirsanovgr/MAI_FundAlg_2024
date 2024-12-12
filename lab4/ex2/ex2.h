@@ -1,6 +1,4 @@
-
-#ifndef LAB4_EX2_H
-#define LAB4_EX2_H
+#pragma once
 
 #include <math.h>
 #include <memory.h>
@@ -54,5 +52,3 @@ error_msg parser_for_print(IntVector** arrays, String* instruction);
 int cmp_greater(const void* a, const void* b);
 int cmp_less(const void* a, const void* b);
 int cmp_rand(const void* a, const void* b);
-
-#endif  // LAB4_EX2_H
