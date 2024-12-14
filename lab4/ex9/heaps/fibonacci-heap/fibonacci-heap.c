@@ -90,38 +90,49 @@ Application* find_max_priority_element_fibonacci_heap(const FibonacciHeap* fibon
 	return fibonacciHeap->head->application;
 }
 
+
+
 error_msg copy_sub_heap(FibonacciNode* node, FibonacciNode** new) {
 	if (node == NULL) {
 		return (error_msg){SUCCESS, "", ""};
 	}
+
+	// Копирование текущего узла
 	error_msg errorMsg = copy_fibonacci_node_new(node, new);
-	if(errorMsg.type){
+	if (errorMsg.type) {
 		return errorMsg;
 	}
 
+	// Копирование детей
 	FibonacciNode* child = node->child;
 	FibonacciNode* new_child = NULL;
 	FibonacciNode* prev_new_child = NULL;
 
-	while (child != NULL) {
-		FibonacciNode* new_child_node;
-		errorMsg = copy_sub_heap(child, &new_child_node);
-		if (errorMsg.type) {
-			destroy_fibonacci_node(*new);
-			return errorMsg;
-		}
-		new_child_node->parent = *new;
+	if (child != NULL) {
+		do {
+			FibonacciNode* new_child_node;
+			errorMsg = copy_sub_heap(child, &new_child_node);
+			if (errorMsg.type) {
+				destroy_fibonacci_node(*new);
+				return errorMsg;
+			}
+			new_child_node->parent = *new;
 
-		if (new_child == NULL) {
-			new_child = new_child_node;
-			(*new)->child = new_child;
-		} else {
-			prev_new_child->right = new_child_node;
-			new_child_node->left = prev_new_child;
-		}
+			if (new_child == NULL) {
+				new_child = new_child_node;
+				(*new)->child = new_child;
+			} else {
+				prev_new_child->right = new_child_node;
+				new_child_node->left = prev_new_child;
+			}
 
-		prev_new_child = new_child_node;
-		child = child->right;
+			prev_new_child = new_child_node;
+			child = child->right;
+		} while (child != node->child);
+
+		// Замыкаем список детей
+		prev_new_child->right = new_child;
+		new_child->left = prev_new_child;
 	}
 
 	return (error_msg){SUCCESS, "", ""};
@@ -187,19 +198,28 @@ void destroy_subheap(FibonacciNode* node) {
 		destroy_fibonacci_node(current);
 		current = next;
 	} while (current != node);
+
 }
 
+// Уничтожение фибоначчиевой кучи
 error_msg destroy_fibonacci_heap(FibonacciHeap* heap) {
 	if (heap == NULL) {
-		return (error_msg){INCORRECT_ARG_FUNCTION, "destroy_fibonacci_heap", "get pointer to null"};
+		return (error_msg){INCORRECT_ARG_FUNCTION, "destroy_fibonacci_heap", "heap pointer is NULL"};
 	}
-	destroy_subheap(heap->head);
+
+	// Уничтожаем все узлы в куче
+	if (heap->head != NULL) {
+		destroy_subheap(heap->head);
+	}
+
+	// Обнуляем поля кучи
 	heap->head = NULL;
 	heap->size = 0;
+
 	free(heap);
+
 	return (error_msg){SUCCESS, "", ""};
 }
-
 
 error_msg merge_fibonacci_heap_with_destroy(FibonacciHeap* first, FibonacciHeap* second, FibonacciHeap** result) {
 	if (first == NULL || second == NULL || result == NULL) {
@@ -215,10 +235,12 @@ error_msg merge_fibonacci_heap_with_destroy(FibonacciHeap* first, FibonacciHeap*
 	if (errorMsg.type) {
 		return errorMsg;
 	}
+
 	if (second->size == 0) {
 		tmp->size = first->size;
 		tmp->head = first->head;
 		first->size = 0;
+		first->head = NULL;
 		*result = tmp;
 		free(first);
 		free(second);
@@ -229,6 +251,7 @@ error_msg merge_fibonacci_heap_with_destroy(FibonacciHeap* first, FibonacciHeap*
 		tmp->size = second->size;
 		tmp->head = second->head;
 		second->size = 0;
+		second->head = NULL;
 		*result = tmp;
 		free(first);
 		free(second);
@@ -241,14 +264,19 @@ error_msg merge_fibonacci_heap_with_destroy(FibonacciHeap* first, FibonacciHeap*
 	first->head->left = second->head;
 	left->right = right;
 	right->left = left;
+
 	tmp->size = first->size + second->size;
 	tmp->head = first->head;
 	if (first->head->application->key < second->head->application->key) {
 		tmp->head = second->head;
 	}
+
 	*result = tmp;
+
+	// Уничтожаем исходные кучи
 	free(first);
 	free(second);
+
 	return (error_msg){SUCCESS, "", ""};
 }
 
@@ -256,6 +284,7 @@ error_msg merge_fibonacci_heap_without_destroy(FibonacciHeap* first, FibonacciHe
 	if (first == NULL || second == NULL || result == NULL) {
 		return (error_msg){INCORRECT_ARG_FUNCTION, "merge_fibonacci_heap_without_destroy", "get pointer to null"};
 	}
+
 	FibonacciHeap *tmp1, *tmp2;
 	error_msg errorMsg = copy_fibonacci_heap_new(first, &tmp1);
 	if (errorMsg.type) {
@@ -274,6 +303,7 @@ error_msg merge_fibonacci_heap_without_destroy(FibonacciHeap* first, FibonacciHe
 		destroy_fibonacci_heap(tmp2);
 		return errorMsg;
 	}
+
 	return (error_msg){SUCCESS, "", ""};
 }
 
@@ -367,43 +397,38 @@ error_msg consolidate(FibonacciHeap* heap) {
 	if (!A) {
 		return (error_msg){MEMORY_ALLOCATED_ERROR, "consolidate", "memory allocated"};
 	}
+
 	FibonacciNode* current = heap->head;
+	if (current == NULL) {
+		free(A);
+		return (error_msg){SUCCESS, "", ""};
+	}
+
+	FibonacciNode* last = current->left;
 	A[current->degree] = current;
 	current = current->right;
-	while (A[current->degree] != current) {
-		if (A[current->degree] == NULL) {
-			A[current->degree] = current;
-			current = current->right;
-		} else {
-			FibonacciNode* conflict = A[current->degree];
-			FibonacciNode *add_to, *adding;
-			if (conflict->application->key > current->application->key ||
-			    (conflict->application->key == current->application->key &&
-			     compare_time(&(conflict->application->time_create), &(current->application->time_create)) == -1)) {
-				add_to = conflict;
-				adding = current;
-			} else {
-				add_to = current;
-				adding = conflict;
+
+	while (current != last) {
+		FibonacciNode* next = current->right;
+		size_t d = current->degree;
+		while (A[d] != NULL) {
+			FibonacciNode* conflict = A[d];
+			if (current->application->key < conflict->application->key) {
+				FibonacciNode* temp = current;
+				current = conflict;
+				conflict = temp;
 			}
-			union_lists(&(add_to->child), adding);
-			adding->parent = add_to;
-			A[current->degree] = NULL;
-			add_to->degree += 1;
-			current = add_to;
+			union_(current, conflict);
+			A[d] = NULL;
+			d++;
 		}
-		if (heap->head->application->key < current->application->key ||
-		    (heap->head->application->key == current->application->key &&
-		     compare_time(&(heap->head->application->time_create), &(current->application->time_create)) == 1)) {
-			heap->head = current;
-		}
+		A[d] = current;
+		current = next;
 	}
 
 	heap->head = NULL;
 	for (size_t i = 0; i < max_degree; ++i) {
 		if (A[i] != NULL) {
-			A[i]->right = NULL;
-			A[i]->left = NULL;
 			add_root_list(heap, A[i]);
 		}
 	}
@@ -416,46 +441,40 @@ error_msg delete_fibonacci_heap(FibonacciHeap* heap, Application** result) {
 		return (error_msg){INCORRECT_ARG_FUNCTION, "delete_fibonacci_heap", "get pointer to null"};
 	}
 	if (heap->size == 0) {
-		return (error_msg){INCORRECT_ARG_FUNCTION, "delete_fibonacci_heap", "try delete from empty head"};
-	}
-	FibonacciNode* prev_max = heap->head;
-//	union_lists(&(head->head), head->head->child);
-	if(heap->head->child){
-		FibonacciNode * child = heap->head->child;
-		FibonacciNode * R = heap->head->right;
-		FibonacciNode * R_child = child->left;
-		heap->head->right = child;
-		child->left = heap->head;
-		R->left = R_child;
-		R_child->right = R;
+		return (error_msg){INCORRECT_ARG_FUNCTION, "delete_fibonacci_heap", "try delete from empty heap"};
 	}
 
-	FibonacciNode* L = heap->head->left;
-	FibonacciNode* R = heap->head->right;
+	FibonacciNode* prev_max = heap->head;
+	if (prev_max->child) {
+		FibonacciNode* child = prev_max->child;
+		FibonacciNode* last_child = child->left;
+		FibonacciNode* R = prev_max->right;
+
+		prev_max->right = child;
+		child->left = prev_max;
+		last_child->right = R;
+		R->left = last_child;
+	}
+
+	FibonacciNode* L = prev_max->left;
+	FibonacciNode* R = prev_max->right;
 	L->right = R;
 	R->left = L;
+
 	if (prev_max->right == prev_max) {
-		heap->size -= 1;
-		if (heap->size == 0) {
-			heap->head = NULL;
+		heap->size = 0;
+		heap->head = NULL;
+	} else {
+		heap->head = R;
+		error_msg errorMsg = consolidate(heap);
+		if (errorMsg.type) {
+			*result = prev_max->application;
+			free(prev_max);
+			return errorMsg;
 		}
-		*result = prev_max->application;
-		free(prev_max);
-		return (error_msg){SUCCESS, "", ""};
+		heap->size -= 1;
 	}
 
-	heap->head = R;
-	error_msg errorMsg = consolidate(heap);
-	if (errorMsg.type) {
-		*result = prev_max->application;
-		free(prev_max);
-		return errorMsg;
-	}
-	heap->head->parent = NULL;
-	heap->size -= 1;
-	if (heap->size == 0) {
-		heap->head = NULL;
-	}
 	*result = prev_max->application;
 	free(prev_max);
 	return (error_msg){SUCCESS, "", ""};

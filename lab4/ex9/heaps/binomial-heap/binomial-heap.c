@@ -219,6 +219,24 @@ error_msg merge_binomial_heap_with_destroy(BinomialHeap* first, BinomialHeap* se
 	return (error_msg){SUCCESS, "", ""};
 }
 
+error_msg copy_binomial_node_r(BinomialNode* node, BinomialNode** new) {
+	if (!node) return (error_msg){SUCCESS, "", ""};
+
+	error_msg errorMsg = copy_binomial_node_new(node, new);
+	if (errorMsg.type) return errorMsg;
+
+	(*new)->degree = node->degree;
+	errorMsg = copy_binomial_node_r(node->child, &((*new)->child));
+	if(errorMsg.type){
+		return errorMsg;
+	}
+	errorMsg = copy_binomial_node_r(node->brother, &((*new)->brother));
+	if(errorMsg.type){
+		return errorMsg;
+	}
+	return (error_msg){SUCCESS, "", ""};
+}
+
 error_msg copy_binomial_heap_new(const BinomialHeap* src, BinomialHeap** dst) {
 	if (src == NULL || dst == NULL) {
 		return (error_msg){INCORRECT_ARG_FUNCTION, "copy_binomial_heap_new", "get pointer to null"};
@@ -230,53 +248,12 @@ error_msg copy_binomial_heap_new(const BinomialHeap* src, BinomialHeap** dst) {
 		return errorMsg;
 	}
 
-	if (src->size == 0) {
-		*dst = tmp;
-		return (error_msg){SUCCESS, "", ""};
-	}
-
-	BinomialNode* cur_src = src->head;
-	BinomialNode* cur_dst = NULL;
-
-	errorMsg = copy_binomial_node_new(cur_src, &cur_dst);
-	tmp->size = 1;
-	if (errorMsg.type) {
+	errorMsg = copy_binomial_node_r(src->head, &(tmp->head));
+	if(errorMsg.type){
+		destroy_binomial_heap(tmp);
 		return errorMsg;
 	}
-	tmp->head = cur_dst;
-
-	for (size_t i = 1; tmp->size < src->size; ++i) {
-		if (cur_src == NULL) {
-			destroy_binomial_heap(tmp);
-			return (error_msg){INCORRECT_OPTIONS_ERROR, "copy_binomial_heap_new",
-			                   "the number of nodes does not match the count field"};
-		}
-		if (cur_src->child && cur_dst->child == NULL) {
-			cur_src = cur_src->child;
-			errorMsg = copy_binomial_node_new(cur_src, &(cur_dst->child));
-			if (errorMsg.type) {
-				destroy_binomial_heap(tmp);
-				return errorMsg;
-			}
-			tmp->size += 1;
-			cur_dst->child->parent = cur_dst;
-			cur_dst = cur_dst->child;
-		} else if (cur_src->brother && cur_dst->brother == NULL) {
-			cur_src = cur_src->brother;
-			errorMsg = copy_binomial_node_new(cur_src, &(cur_dst->brother));
-			if (errorMsg.type) {
-				destroy_binomial_heap(tmp);
-				return errorMsg;
-			}
-			tmp->size += 1;
-			cur_dst->brother->parent = cur_dst->parent;
-			cur_dst = cur_dst->brother;
-		} else {
-			cur_src = cur_src->parent;
-			cur_dst = cur_dst->parent;
-		}
-	}
-
+	tmp->size = src->size;
 	*dst = tmp;
 	return (error_msg){SUCCESS, "", ""};
 }
@@ -369,7 +346,6 @@ error_msg delete_binomial_heap(BinomialHeap* binomialHeap, Application** applica
 	if (binomialHeap->size == 0) {
 		return (error_msg){INCORRECT_ARG_FUNCTION, "delete_binomial_heap", "try to delete from empty queue"};
 	}
-	size_t ttt = binomialHeap->size;
 	BinomialNode* prev_max = NULL;
 	BinomialNode* cur_max = binomialHeap->head;
 	BinomialNode* cur = binomialHeap->head;
@@ -386,20 +362,10 @@ error_msg delete_binomial_heap(BinomialHeap* binomialHeap, Application** applica
 	}
 
 	if (prev_max == NULL) {
-		if (binomialHeap->size != 1) {
-			binomialHeap->size -= 1;
-			binomialHeap->head = binomialHeap->head->brother;
-			*application = cur_max->application;
-			free(cur_max);
-		} else {
-			binomialHeap->size = 0;
-			binomialHeap->head = NULL;
-			*application = cur_max->application;
-			free(cur_max);
-		}
-		return (error_msg){SUCCESS, "", ""};
+		binomialHeap->head = cur_max->brother;
+	} else {
+		prev_max->brother = cur_max->brother;
 	}
-
 	// создаем 2 дерева и сливаем их с основным
 	BinomialHeap* tmp_1;
 	error_msg errorMsg = create_binomial_heap(&tmp_1);
@@ -407,42 +373,25 @@ error_msg delete_binomial_heap(BinomialHeap* binomialHeap, Application** applica
 		return errorMsg;
 	}
 
-	BinomialHeap* tmp_2;
-	errorMsg = create_binomial_heap(&tmp_2);
-	if (errorMsg.type) {
-		destroy_binomial_heap(tmp_1);
-		return errorMsg;
-	}
-
-	counting_size_binomial_node(cur_max->brother, &(tmp_1->size));
-	counting_size_binomial_node(cur_max->child, &(tmp_2->size));
-	tmp_1->head = cur_max->brother;
-	tmp_2->head = cur_max->child;
+	counting_size_binomial_node(cur_max->child, &(tmp_1->size));
+	tmp_1->head = cur_max->child;
 	*application = cur_max->application;
-	prev_max->brother = cur_max->brother;
-
-	BinomialHeap *res1, *res2;
-	errorMsg = merge_binomial_heap_without_destroy(tmp_1, binomialHeap, &res1);
-	if (errorMsg.type) {
-		destroy_binomial_heap(tmp_1);
-		destroy_binomial_heap(tmp_2);
-		return errorMsg;
+	if (tmp_1->head) {
+		tmp_1->head->parent = NULL;
 	}
 
-	errorMsg = merge_binomial_heap_without_destroy(tmp_2, res1, &res2);
+	binomialHeap->size -= 1;
+
+	BinomialHeap* res2;
+	errorMsg = merge_binomial_heap_without_destroy(tmp_1, binomialHeap, &res2);
 	if (errorMsg.type) {
 		destroy_binomial_heap(tmp_1);
-		destroy_binomial_heap(tmp_2);
-		destroy_binomial_heap(res1);
 		return errorMsg;
 	}
 
 	destroy_binomial_heap(tmp_1);
-	destroy_binomial_heap(tmp_2);
-	destroy_binomial_heap(res1);
 	delete_tree(binomialHeap->head);
 	binomialHeap->head = res2->head;
-	binomialHeap->size = ttt - 1;
 	free(res2);
 	free(cur_max);
 

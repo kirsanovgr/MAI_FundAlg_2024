@@ -75,6 +75,7 @@ error_msg modeling(DStorage *storage, Application **mas_applications, size_t siz
 		// Получаем новые заявки и добавляем их в очередь
 		while (index_mas < size_mas && compare_time(&(mas_applications[index_mas]->time_create), &now) == 0) {
 			errorMsg = storage->v.get_storage(&(storage->s), mas_applications[index_mas]->id_department, &departament);
+
 			if (errorMsg.type) {
 				for (size_t i = index_mas + 1; i < size_mas; ++i) {
 					destroy_application(mas_applications[i]);
@@ -84,6 +85,7 @@ error_msg modeling(DStorage *storage, Application **mas_applications, size_t siz
 				return errorMsg;
 			}
 
+			size_t id_app = mas_applications[index_mas]->id_application;
 			print_new_request(log_file, mas_applications[index_mas]);
 			errorMsg = departament->queue.v.insert_heap(departament->queue.q, mas_applications[index_mas]);
 			if (errorMsg.type) {
@@ -94,7 +96,7 @@ error_msg modeling(DStorage *storage, Application **mas_applications, size_t siz
 				fclose(log_file);
 				return errorMsg;
 			}
-			// TODO Проверка на переполнение
+//			 Проверка на переполнение
 			if ((double)departament->queue.v.get_size(departament->queue.q) / (double)departament->count_operators >=
 			    overload_coefficient) {
 				Departament *most_free_department;
@@ -107,6 +109,10 @@ error_msg modeling(DStorage *storage, Application **mas_applications, size_t siz
 					free(mas_applications);
 					fclose(log_file);
 					return errorMsg;
+				}
+				if(departament->id == most_free_department->id){
+					index_mas++;
+					continue;
 				}
 				Queue res;
 				// Сливаем наиболее свободную и нашу
@@ -133,9 +139,10 @@ error_msg modeling(DStorage *storage, Application **mas_applications, size_t siz
 				}
 				// Очищаем наиболее свободную и помещаем туда указатель на новую
 				most_free_department->queue.v.destroy_heap(most_free_department->queue.q);
-				most_free_department->queue = res;
+				most_free_department->queue.q = res.q;
 
-				print_overloaded(log_file, mas_applications[index_mas]->id_application, most_free_department->id, &now);
+				print_overloaded(log_file, id_app, most_free_department->id, &now);
+
 			}
 			index_mas++;
 		}

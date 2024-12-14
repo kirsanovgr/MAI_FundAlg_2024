@@ -7,7 +7,7 @@
 #include "../application/application.h"
 
 #define MAX_COUNT_FILES 50
-#define MAX_COUNT_APPLICATIONS 1000
+#define MAX_COUNT_APPLICATIONS 100
 #define MAX_LENGTH_TEXT 100
 
 void generate_random_text(char* buffer) {
