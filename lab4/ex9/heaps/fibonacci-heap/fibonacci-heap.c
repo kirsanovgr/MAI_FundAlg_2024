@@ -306,32 +306,40 @@ error_msg merge_fibonacci_heap_without_destroy(FibonacciHeap* first, FibonacciHe
 
 	return (error_msg){SUCCESS, "", ""};
 }
-
 void union_(FibonacciNode* x, FibonacciNode* y) {
-	if (x == NULL) {
+	if (x == NULL || y == NULL) {
 		return;
 	}
-	//	if(x->application->key > y->application->key){
-	//		FibonacciNode * t = y;
-	//		y = x;
-	//		x = t;
-	//	}
 
+	// Убедимся, что x имеет больший ключ, чем y
+	if (x->application->key < y->application->key) {
+		FibonacciNode* temp = x;
+		x = y;
+		y = temp;
+	}
+
+	// Удаляем y из корневого списка
 	y->left->right = y->right;
 	y->right->left = y->left;
 
+	// Делаем y ребенком x
 	y->parent = x;
 	if (x->child == NULL) {
 		x->child = y;
 		y->left = y;
 		y->right = y;
 	} else {
-		y->left = x->child;
-		y->right = x->child->right;
-		x->child->right->left = y;
-		x->child->right = y;
+		FibonacciNode* first_child = x->child;
+		y->right = first_child;
+		y->left = first_child->left;
+		first_child->left->right = y;
+		first_child->left = y;
 	}
+
+	// Увеличиваем степень x
 	x->degree++;
+
+	// Сбрасываем метку y
 	y->marked = 0;
 }
 
@@ -376,12 +384,12 @@ void add_root_list(FibonacciHeap* heap, FibonacciNode* node) {
 		node->left = node;
 		node->right = node;
 	} else {
-		FibonacciNode* L = heap->head->left;
-		FibonacciNode* R = heap->head;
+		FibonacciNode * L = heap->head;
+		FibonacciNode * R = heap->head->right;
 		L->right = node;
 		node->left = L;
-		node->right = R;
 		R->left = node;
+		node->right = R;
 
 		if (node->application->key > heap->head->application->key ||
 		    (node->application->key == heap->head->application->key &&
@@ -399,18 +407,12 @@ error_msg consolidate(FibonacciHeap* heap) {
 	}
 
 	FibonacciNode* current = heap->head;
-	if (current == NULL) {
-		free(A);
-		return (error_msg){SUCCESS, "", ""};
-	}
-
 	FibonacciNode* last = current->left;
-	A[current->degree] = current;
-	current = current->right;
 
-	while (current != last) {
+	do {
 		FibonacciNode* next = current->right;
 		size_t d = current->degree;
+
 		while (A[d] != NULL) {
 			FibonacciNode* conflict = A[d];
 			if (current->application->key < conflict->application->key) {
@@ -419,17 +421,23 @@ error_msg consolidate(FibonacciHeap* heap) {
 				conflict = temp;
 			}
 			union_(current, conflict);
-			A[d] = NULL;
-			d++;
+			A[d] = NULL;  // Освобождаем ячейку
+			d++;          // Увеличиваем степень
 		}
-		A[d] = current;
-		current = next;
-	}
+		A[d] = current;  // Сохраняем текущий узел
+		current = next;  // Переходим к следующему узлу
+	} while (current != last);
 
+	// Обновляем head и связи
 	heap->head = NULL;
 	for (size_t i = 0; i < max_degree; ++i) {
 		if (A[i] != NULL) {
-			add_root_list(heap, A[i]);
+			if (heap->head == NULL) {
+				heap->head = A[i];
+				heap->head->left = heap->head->right = heap->head;  // Устанавливаем связи
+			} else {
+				add_root_list(heap, A[i]);  // Добавляем в корневой список
+			}
 		}
 	}
 	free(A);
@@ -445,38 +453,51 @@ error_msg delete_fibonacci_heap(FibonacciHeap* heap, Application** result) {
 	}
 
 	FibonacciNode* prev_max = heap->head;
+
+	// Переносим детей удаляемого узла в корневой список
 	if (prev_max->child) {
 		FibonacciNode* child = prev_max->child;
 		FibonacciNode* last_child = child->left;
 		FibonacciNode* R = prev_max->right;
+		FibonacciNode* L = prev_max->left;
 
-		prev_max->right = child;
-		child->left = prev_max;
+		// Связываем детей с корневым списком
+		L->right = child;
+		child->left = L;
 		last_child->right = R;
 		R->left = last_child;
+
+		// Устанавливаем parent в NULL для всех детей
+		FibonacciNode* current = child;
+		do {
+			current->parent = NULL;
+			current = current->right;
+		} while (current != R);
 	}
 
+	// Удаляем prev_max из корневого списка
 	FibonacciNode* L = prev_max->left;
 	FibonacciNode* R = prev_max->right;
 	L->right = R;
 	R->left = L;
 
+	// Если prev_max был единственным узлом
 	if (prev_max->right == prev_max) {
 		heap->size = 0;
 		heap->head = NULL;
 	} else {
-		heap->head = R;
-		error_msg errorMsg = consolidate(heap);
+		heap->head = R;                          // Новый максимальный узел
+		error_msg errorMsg = consolidate(heap);  // Консолидация
 		if (errorMsg.type) {
 			*result = prev_max->application;
 			free(prev_max);
 			return errorMsg;
 		}
-		heap->size -= 1;
+		heap->size -= 1;  // Уменьшаем размер кучи
 	}
 
-	*result = prev_max->application;
-	free(prev_max);
+	*result = prev_max->application;  // Возвращаем удаленное приложение
+	free(prev_max);                   // Освобождаем память
 	return (error_msg){SUCCESS, "", ""};
 }
 

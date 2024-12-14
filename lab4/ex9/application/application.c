@@ -153,6 +153,7 @@ Time generate_random_time() {
 	}
 	t.day = 1 + rand() % max_day;
 
+
 	t.hour = rand() % 24;
 	t.min = rand() % 60;
 

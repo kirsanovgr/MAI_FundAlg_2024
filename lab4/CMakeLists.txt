@@ -65,7 +65,8 @@ add_executable(ex9
         ex9/main_files/preparing.c
         ex9/main_files/preparing.h
         ex9/main_files/main-stage.c
-        ex9/main_files/main-stage.h)
+        ex9/main_files/main-stage.h
+)
 
 add_executable(ex_9_d1
         ex9/auxiliary_application_1/auxiliary_application_1.c
