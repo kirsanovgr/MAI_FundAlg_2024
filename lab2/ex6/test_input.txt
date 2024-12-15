@@ -1,0 +1,6 @@
+Roman: MCMLXXXIV
+Zr: 010001
+Base 16: ff
+Base 16 Upper: FF
+|||12|||13()12.24343
+|||12|||13()12.24343 sdf

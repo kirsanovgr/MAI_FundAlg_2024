@@ -1,0 +1,33 @@
+if [ $# -ne 5 ]
+then
+    echo "Incorrect test usage. Expected <exec file with args> <return code> <line with output> <output file> <file with expected output data>"
+    exit 1
+fi
+
+if [ ! -f $5 ]; then
+    echo "Output file with expected data not found"
+    exit 3
+fi
+
+ret=$2
+
+if (( $ret < 0 ))
+then
+    ret=$(( 256 + $ret ))
+fi
+
+res=$($(pwd)/$1)
+
+ret_code=$?
+
+if [[ "$res" = "$3" && $ret_code = $ret && "$(cat $4)" = "$(cat $5)" ]]
+then
+    exit 0
+else
+    echo "Passed args:"
+    echo $*
+    echo "Incorrect answer: expected output=\""$3"\", received=\""$res"\", expected return code=\""$ret"\", received=\""$ret_code"\""
+    echo "Result file difference:"
+    echo $(diff $4 $5)
+    exit 2
+fi

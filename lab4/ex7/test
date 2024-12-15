@@ -1,0 +1,10 @@
+myvar=15;
+bg=25;
+ccc=bg+11;
+myvar=ccc;
+print myvar;
+bg=     ccc          *                 myvar;
+
+BG = bg / 2;
+BGG = BG % 7;
+print;
