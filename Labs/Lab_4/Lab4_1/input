@@ -1,0 +1,9 @@
+#define PI 3.14159
+#define E 2.71828
+#define MESSAGE Hello
+#define NAME World
+
+Значения некоторых констант:
+Число ПИ = PI
+Число Е = E
+MESSAGE NAME!

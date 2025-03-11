@@ -1,0 +1,6 @@
+#define X1 ValueX1
+#define _test_macro TestMacro
+#define ID_1234 ABC1234
+
+X1 и _test_macro - это примеры нестандартных идентификаторов.
+ID_1234 — уникальный идентификатор.
