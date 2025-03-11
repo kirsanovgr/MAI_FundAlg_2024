@@ -1,0 +1,5 @@
+1 John Smith CS101 80 90 75 85 88
+2 Alice Johnson CS101 70 78 84 90 86
+3 Bob Brown CS102 95 92 88 93 91
+4 Carol White CS101 60 70 68 75 72
+5 Dave Green CS102 88 85 82 79 90

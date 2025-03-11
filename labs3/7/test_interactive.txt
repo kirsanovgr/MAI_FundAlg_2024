@@ -1,0 +1,24 @@
+﻿7
+livers.txt
+1
+Ivanov Ivan Ivanovich 01/01/1990 M 50000.00
+1
+Petrova Anna Sergeevna 15/07/1985 W 60000.00
+1
+Smirnov Pavel Alexandrovich 20/05/1975 M 75000.00
+5
+2
+Ivanov
+Ivanov Ivan Petrovich 02/02/1992 M 55000.00
+5
+3
+Petrova
+5
+4
+5
+6
+output.txt
+1
+Sidorov Oleg Ivanovich 10/10/1980 M 45000.00
+5
+0
